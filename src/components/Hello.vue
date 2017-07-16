@@ -23,12 +23,12 @@
 <script>
 export default {
   name: 'hello',
-  data() {
+  data () {
     return {
-      msg: 'Vue.js App is Up!',
-    };
-  },
-};
+      msg: 'Vue.js App'
+    }
+  }
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
