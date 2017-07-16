@@ -5,14 +5,14 @@
     </h2>
     <h4 v-if='isCatSelected'>
       <span class='text-capitalize text-info' @click='resetSelection()'>
-        {{catSelectedValue}}
+        {{catSelected}}
       </span>
     </h4>
-    <table class='table table-hover table-condensed table-striped'>
+    <table class='table table-hover table-condensed'>
       <tbody>
       <tr v-for='routine in routines' v-bind:key="routine.id">
         <template v-if='isCatSelected'>
-          <template v-if='catSelectedValue === routine.category'>
+          <template v-if='catSelected === routine.category'>
             <td class='col-md-2'>{{ routine.name }}</td>
             <td v-if=' ! isCatSelected' class='col-md-1' >
               <span class='label'
@@ -51,7 +51,7 @@ import cycle from '../utils'
 import R from 'ramda'
 
 let routines = [
-    { id: 1, name: "Yoga", category: 'fitness', notes: 'Perform asanas' },
+    { id: 1, name: "Yoga/Kriya", category: 'fitness', notes: 'Perform asanas' },
     { id: 2, name: "Meditation", category: 'well-being', notes: 'Focus on the Breath' },
     { id: 3, name: "Workout", category: 'fitness', notes: 'Gym' },
     { id: 4, name: "Commute", category: 'work' },
@@ -67,7 +67,7 @@ let routines = [
     { id:13, name: "Listen to Music", category: 'entertainment' },
     { id:13, name: "Play Music", category: 'well-being' },
     { id:14, name: "Work", category: 'work', notes: 'Source of income' },
-    { id:15, name: "Kriya", category: 'fitness', notes: 'Exercise' },
+    { id:15, name: "Study", category: 'self-improvement', notes: 'Brain development' },
     { id:16, name: "Hacking", category: 'self-improvement', notes: 'Mental calisthenics' },
     { id:17, name: "Eating-out", category: 'entertainment', notes: 'Meet up with the guys over beer' },
     { id:18, name: "Outing", category: 'family', notes: 'Hang out with the family' },
@@ -77,23 +77,22 @@ const labeltypes = ['label-info', 'label-primary', 'label-success',
                     'label-danger', 'label-warning', 'label-default']
 
 export default {
-  name: 'routine',
-
+  name: 'routines',
   data() {
     return {
       routines,
       isCatSelected: false,
-      catSelectedValue: '',
+      catSelected: '',
     }
   },
   methods: {
     selectCategory: function (category) {
       this.$data.isCatSelected = !this.$data.isCatSelected
-      this.$data.catSelectedValue = this.$data.isCatSelected ? category : ''
+      this.$data.catSelected = this.$data.isCatSelected ? category : ''
     },
     resetSelection() {
       this.$data.isCatSelected = false
-      this.$data.catSelectedValue = ''
+      this.$data.catSelected = ''
     }
   },
   created() {
