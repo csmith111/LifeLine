@@ -1,7 +1,7 @@
 {
   "name": "lifeline",
   "version": "1.0.0",
-  "description": "Lifeline gives you an insight into your life",
+  "description": "Record your Lifeline",
   "author": "VAP & VJ",
   "private": true,
   "scripts": {

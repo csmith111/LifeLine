@@ -3,49 +3,45 @@
     <h2>
       Routines
     </h2>
-    <div class="panel panel-default">
-      <div class="panel-body">
-        <h4 v-if='catSelected'>
-          <span class='text-capitalize text-info' @click='resetSelection()'>
-            {{catSelectedValue}}
-          </span>
-        </h4>
-        <table class='table table-hover table-condensed table-striped'>
-          <tbody>
-          <tr v-for='routine in routines' v-bind:key="routine.id">
-            <template v-if='catSelected'>
-              <template v-if='catSelectedValue == routine.category'>
-                <td class='col-md-2'>{{ routine.name }}</td>
-                <td class='col-md-1' v-if=' ! catSelected'>
-                  <span class='label'
-                        v-bind:class="[routine.color]"
-                        @click='selectCategory(routine.category)'>
-                    {{ routine.category }}
-                  </span></td>
-                <td class='text-muted'>{{routine.notes}}</td>
-              </template>
-            </template>
-            <template v-else>
-              <td class='col-md-2'>{{routine.name}}</td>
-              <td class='col-md-1' v-if=' ! catSelected'>
-                <span class='label'
-                      v-bind:class="[routine.color]"
-                      @click='selectCategory(routine.category)'>
-                  {{ routine.category }}
-                </span></td>
-              <td class='text-muted'>{{routine.notes}}</td>
-            </template>
-          </tr>
-        </tbody>
-        </table>
-        <p>
-        <router-link to='/' class='label label-primary'>Home</router-link> &nbsp; &nbsp;
-        <span v-if='catSelected' class='label label-info' @click='resetSelection()'>
-          Show All Categories
-        </span>
-        </p>
-      </div>
-    </div>
+    <h4 v-if='catSelected'>
+      <span class='text-capitalize text-info' @click='resetSelection()'>
+        {{catSelectedValue}}
+      </span>
+    </h4>
+    <table class='table table-hover table-condensed table-striped'>
+      <tbody>
+      <tr v-for='routine in routines' v-bind:key="routine.id">
+        <template v-if='catSelected'>
+          <template v-if='catSelectedValue === routine.category'>
+            <td class='col-md-2'>{{ routine.name }}</td>
+            <td v-if=' ! catSelected' class='col-md-1' >
+              <span class='label'
+                    v-bind:class="[routine.color]"
+                    @click='selectCategory(routine.category)'>
+                {{ routine.category }}
+              </span></td>
+            <td class='text-muted'>{{routine.notes}}</td>
+          </template>
+        </template>
+        <template v-else>
+          <td class='col-md-2'>{{routine.name}}</td>
+          <td v-if=' ! catSelected' class='col-md-1' >
+            <span class='label'
+                  v-bind:class="[routine.color]"
+                  @click='selectCategory(routine.category)'>
+              {{ routine.category }}
+            </span></td>
+          <td class='text-muted'>{{routine.notes}}</td>
+        </template>
+      </tr>
+    </tbody>
+    </table>
+    <p>
+      <router-link to='/' class='label label-primary'>Home</router-link> &nbsp; &nbsp;
+      <span v-if='catSelected' class='label label-info' @click='resetSelection()'>
+        Show All Categories
+      </span>
+    </p>
   </div>
 </template>
 
