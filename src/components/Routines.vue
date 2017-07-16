@@ -3,7 +3,7 @@
     <h2>
       Routines
     </h2>
-    <h4 v-if='catSelected'>
+    <h4 v-if='isCatSelected'>
       <span class='text-capitalize text-info' @click='resetSelection()'>
         {{catSelectedValue}}
       </span>
@@ -11,10 +11,10 @@
     <table class='table table-hover table-condensed table-striped'>
       <tbody>
       <tr v-for='routine in routines' v-bind:key="routine.id">
-        <template v-if='catSelected'>
+        <template v-if='isCatSelected'>
           <template v-if='catSelectedValue === routine.category'>
             <td class='col-md-2'>{{ routine.name }}</td>
-            <td v-if=' ! catSelected' class='col-md-1' >
+            <td v-if=' ! isCatSelected' class='col-md-1' >
               <span class='label'
                     v-bind:class="[routine.color]"
                     @click='selectCategory(routine.category)'>
@@ -25,7 +25,7 @@
         </template>
         <template v-else>
           <td class='col-md-2'>{{routine.name}}</td>
-          <td v-if=' ! catSelected' class='col-md-1' >
+          <td v-if=' ! isCatSelected' class='col-md-1' >
             <span class='label'
                   v-bind:class="[routine.color]"
                   @click='selectCategory(routine.category)'>
@@ -38,7 +38,7 @@
     </table>
     <p>
       <router-link to='/' class='label label-primary'>Home</router-link> &nbsp; &nbsp;
-      <span v-if='catSelected' class='label label-info' @click='resetSelection()'>
+      <span v-if='isCatSelected' class='label label-info' @click='resetSelection()'>
         Show All Categories
       </span>
     </p>
@@ -50,7 +50,7 @@
 import cycle from '../utils'
 import R from 'ramda'
 
-const routines = [
+let routines = [
     { id: 1, name: "Yoga", category: 'fitness', notes: 'Perform asanas' },
     { id: 2, name: "Meditation", category: 'well-being', notes: 'Focus on the Breath' },
     { id: 3, name: "Workout", category: 'fitness', notes: 'Gym' },
@@ -82,17 +82,17 @@ export default {
   data() {
     return {
       routines,
-      catSelected: false,
+      isCatSelected: false,
       catSelectedValue: '',
     }
   },
   methods: {
     selectCategory: function (category) {
-      this.$data.catSelected = !this.$data.catSelected
-      this.$data.catSelectedValue = this.$data.catSelected ? category : ''
+      this.$data.isCatSelected = !this.$data.isCatSelected
+      this.$data.catSelectedValue = this.$data.isCatSelected ? category : ''
     },
     resetSelection() {
-      this.$data.catSelected = false
+      this.$data.isCatSelected = false
       this.$data.catSelectedValue = ''
     }
   },
@@ -101,7 +101,9 @@ export default {
     const uniqueCats = uniqueCategoriesFn(routines)
     const colors = cycle(uniqueCats.length, labeltypes)
     const colormap = R.zipObj(uniqueCats, colors)
-    routines.map( r => {
+    const sortByCat = R.sortBy(R.prop('category'))
+    this.routines = sortByCat(this.routines)
+    this.routines.map(r => {
       r.color = colormap[r.category]
     })
   }
