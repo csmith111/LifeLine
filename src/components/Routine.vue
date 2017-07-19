@@ -3,18 +3,18 @@
     <h2>
       Routine
     </h2>
-    <p>
-      This is where we will edit the selected Routine.
-    </p>
-    <p>
-      # of durations: {{durations.length}} <br/>
-      # of frequencies: {{frequencies.length}} <br/>
-      <hr/>
       Routine: {{ routine.name }} <br/>
       Cateory: {{ routine.category }} <br/>
       Duration: {{ routine.duration }} <br/>
       Frequency: {{ routine.frequency }} <br/>
     </p>
+    <hr/>
+    <h4>
+      Stats.
+    </h4>
+    <p>
+      # of durations: {{durations.length}} <br/>
+      # of frequencies: {{frequencies.length}} <br/>
     <p>
       <router-link class='label label-info' to='/routines'>Routines</router-link>
       &nbsp;
@@ -52,7 +52,7 @@ export default {
     axios.get('http://localhost:3000/routines/' + this.currentRoutineId)
       .then(resolveRoutine)
       .catch(error => {
-        alert("Error fetching routine: " + this.currentRoutineId)
+        alert("Error fetching routine #: " + this.currentRoutineId)
       })
   },
   data() {
