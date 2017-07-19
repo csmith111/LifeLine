@@ -1,22 +1,38 @@
 <template>
   <div class="welcome">
     <h2>
-      LifeLine
+      <!-- LifeLine -->
+      <br>
+      &nbsp;
+      <br>
+      &nbsp;
     </h2>
-    <div class="well well-lg">
-      <h4 class="text-center">
-        Welcome to LifeLine
-      </h4>
+    <div class="jumbotron text-center">
+      <h3>
+        LifeLine
+      </h3>
       <br/>
-      <p class="text-center">
-        We will track your Routines, Tasks &amp; Plans with which we hope you will have better insight into your life.
+      <p>
+            Track your <abbr title='Day-to-day activities' class='initialism'>Routines</abbr>,
+            <abbr title='Visions of the Future with some deadlines'>Plans</abbr> &amp;
+            <abbr title='Short-term activity plans with deadlines'>Tasks</abbr>, <br/>
+            for Insights into your Life &amp; Times.
+        <br/>
+        <br/>
+      <p>
+      <p>
+        <router-link to='/routines' class='btn btn-sm btn-primary'>Routines</router-link>
+        &nbsp; &nbsp;
+        <router-link to='/plans' class='btn btn-sm btn-danger'>Plans</router-link>
+        &nbsp; &nbsp;
+        <router-link to='/tasks' class='btn btn-sm btn-warning'>Tasks</router-link>
       </p>
-      <br/>
-      <router-link to='/routines' class='label label-info'>Routines</router-link>
-      &nbsp; &nbsp;
-      <router-link to='/plans' class='label label-info'>Plans</router-link>
-      &nbsp; &nbsp;
-      <router-link to='/tasks' class='label label-info'>Tasks</router-link>
     </div>
   </div>
 </template>
+
+<style scoped>
+  abbr {
+
+  }
+</style>
