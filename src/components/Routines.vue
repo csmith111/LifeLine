@@ -14,64 +14,32 @@
     </h4>
     <table class='table table-hover table-condensed'>
       <tbody>
-        <tr v-for='routine in routines' v-bind:key="routine.id">
-          <template v-if='isCatSelected'>
-            <template v-if='catSelected === routine.category'>
-              <td class='col-md-2'>
-                <router-link :to='{name: "Routine", params: {id: routine.id } }'>
-                  {{ routine.name }}
-                </router-link>
-              </td>
-              <td v-if=' ! isCatSelected' class='col-md-2'>
-                <span class='label'
-                      v-bind:class="[routine.catcolor]"
-                      @click='selectCategory(routine.category)'>
-                  {{ routine.category }}
-                </span>
-              </td>
-              <td class='col-md-2'>
-                <span class='label'
-                      v-bind:class="[routine.durationcolor]">
-                      {{routine.duration}}
-                </span>
-              </td>
-              <td class='col-md-2'>
-                <span class='label'
-                      v-bind:class="[routine.freqcolor]">
-                  {{routine.frequency}}
-                </span>
-              </td>
-              <td class='text-muted'>{{routine.notes}}</td>
-            </template>
-          </template>
-          <template v-else>
-
-            <td class='col-md-2'>
-              <router-link :to='{name: "Routine", params: { id: routine.id } }'>
-                {{ routine.name }}
-              </router-link>
-            </td>
-            <td v-if=' ! isCatSelected' class='col-md-2'>
-              <span class='label'
-                    v-bind:class="[routine.catcolor]"
-                    @click='selectCategory(routine.category)'>
-                {{ routine.category }}
-              </span>
-            </td>
-            <td class='col-md-2'>
-              <span class='label'
-                    v-bind:class="[routine.durationcolor]">
-                    {{routine.duration}}
-              </span>
-            </td>
-            <td class='col-md-2'>
-              <span class='label'
-                    v-bind:class="[routine.freqcolor]">
-                {{routine.frequency}}
-              </span>
-            </td>
-            <td class='text-muted'>{{routine.notes}}</td>
-          </template>
+        <tr v-for='routine in filterRoutinesByCategory' v-bind:key="routine.id">
+          <td class='col-md-2'>
+            <router-link :to='{name: "Routine", params: {id: routine.id } }'>
+              {{ routine.name }}
+            </router-link>
+          </td>
+          <td v-if=' ! isCatSelected' class='col-md-2'>
+            <span class='label'
+                  :class="[routine.catcolor]"
+                  @click='selectCategory(routine.category)'>
+              {{ routine.category }}
+            </span>
+          </td>
+          <td class='col-md-2'>
+            <span class='label'
+                  :class="[routine.durationcolor]">
+              {{routine.duration}}
+            </span>
+          </td>
+          <td class='col-md-2'>
+            <span class='label'
+                  :class="[routine.freqcolor]">
+              {{routine.frequency}}
+            </span>
+          </td>
+          <td class='text-muted'>{{routine.notes}}</td>
         </tr>
       </tbody>
     </table>
@@ -110,6 +78,17 @@ export default {
     resetSelection() {
       this.$data.isCatSelected = false
       this.$data.catSelected = ''
+    }
+  },
+  computed: {
+    filterRoutinesByCategory() {
+      if (this.$data.isCatSelected) {
+        return this.$data.routines.filter(r => {
+          return this.$data.catSelected === r.category
+        })
+      } else {
+        return this.$data.routines
+      }
     }
   },
   created() {
