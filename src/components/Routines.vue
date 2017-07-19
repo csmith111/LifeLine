@@ -24,7 +24,7 @@
               </td>
               <td v-if=' ! isCatSelected' class='col-md-2'>
                 <span class='label'
-                      v-bind:class="[routine.color]"
+                      v-bind:class="[routine.catcolor]"
                       @click='selectCategory(routine.category)'>
                   {{ routine.category }}
                 </span>
@@ -33,7 +33,8 @@
                   {{routine.duration}}
               </td>
               <td class='col-md-2'>
-                <span class='label label-primary'>
+                <span class='label'
+                      v-bind:class="[routine.freqcolor]">
                   {{routine.frequency}}
                 </span>
               </td>
@@ -49,14 +50,15 @@
             </td>
             <td v-if=' ! isCatSelected' class='col-md-2'>
               <span class='label'
-                    v-bind:class="[routine.color]"
+                    v-bind:class="[routine.catcolor]"
                     @click='selectCategory(routine.category)'>
                 {{ routine.category }}
               </span>
             </td>
             <td class='col-md-2'>{{routine.duration}}</td>
             <td class='col-md-2'>
-              <span class='label label-default'>
+              <span class='label'
+                    v-bind:class="[routine.freqcolor]">
                 {{routine.frequency}}
               </span>
             </td>
@@ -107,13 +109,19 @@ export default {
       // console.log(JSON.stringify(resolve.data));
       this.routines = resolve.data
       const uniqueCategoriesFn = R.compose(R.uniq, R.pluck('category'))
+      const uniqueFrequenciesFn = R.compose(R.uniq, R.pluck('frequency'))
       const uniqueCats = uniqueCategoriesFn(this.routines)
-      const colors = cycle(uniqueCats.length, labeltypes)
-      const colormap = R.zipObj(uniqueCats, colors)
+      const uniqueFreqs = uniqueFrequenciesFn(this.routines)
+      console.log(JSON.stringify(uniqueFreqs));
+      const catcolors = cycle(uniqueCats.length, labeltypes)
+      const catcolormap = R.zipObj(uniqueCats, catcolors)
+      const freqcolors = cycle(uniqueFreqs.length, labeltypes)
+      const freqcolormap = R.zipObj(uniqueFreqs, freqcolors)
       const sortByCat = R.sortBy(R.prop('category'))
       this.routines = sortByCat(this.routines)
       this.routines.map(r => {
-        r.color = colormap[r.category]
+        r.catcolor = catcolormap[r.category]
+        r.freqcolor = freqcolormap[r.frequency]
       })
     }
     axios.get('http://localhost:3000/routines')
