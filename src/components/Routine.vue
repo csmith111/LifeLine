@@ -4,6 +4,7 @@
     <p>
       Routine: {{ routine.name }} <br/>
       Category: {{ routine.category }} <br/>
+      Notes: {{ routine.notes }} <br/>
       Duration: {{ routine.duration }} <br/>
       Frequency: {{ routine.frequency }} <br/>
     </p>

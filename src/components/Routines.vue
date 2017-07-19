@@ -8,7 +8,7 @@
         {{catSelected}}
       </span>
       &nbsp; &nbsp;
-      <span v-if='isCatSelected' class='label label-default' @click='resetSelection()'>
+      <span v-if='isCatSelected' class='label label-info' @click='resetSelection()'>
         Show All Categories
       </span>
     </h4>
@@ -18,7 +18,7 @@
           <template v-if='isCatSelected'>
             <template v-if='catSelected === routine.category'>
               <td class='col-md-2'>
-                <router-link to='{name: "Routine", params: {id: routine.id } }'>
+                <router-link :to='{name: "Routine", params: {id: routine.id } }'>
                   {{ routine.name }}
                 </router-link>
               </td>
@@ -33,7 +33,7 @@
                   {{routine.duration}}
               </td>
               <td class='col-md-2'>
-                <span class='label label-default'>
+                <span class='label label-primary'>
                   {{routine.frequency}}
                 </span>
               </td>
@@ -67,7 +67,7 @@
     </table>
     <p>
       <router-link to='/' class='label label-primary'>Home</router-link> &nbsp; &nbsp;
-      <span v-if='isCatSelected' class='label label-default' @click='resetSelection()'>
+      <span v-if='isCatSelected' class='label label-info' @click='resetSelection()'>
         Show All Categories
       </span>
     </p>
