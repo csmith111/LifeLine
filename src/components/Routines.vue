@@ -30,7 +30,10 @@
                 </span>
               </td>
               <td class='col-md-2'>
-                  {{routine.duration}}
+                <span class='label'
+                      v-bind:class="[routine.durationcolor]">
+                      {{routine.duration}}
+                </span>
               </td>
               <td class='col-md-2'>
                 <span class='label'
@@ -55,7 +58,12 @@
                 {{ routine.category }}
               </span>
             </td>
-            <td class='col-md-2'>{{routine.duration}}</td>
+            <td class='col-md-2'>
+              <span class='label'
+                    v-bind:class="[routine.durationcolor]">
+                    {{routine.duration}}
+              </span>
+            </td>
             <td class='col-md-2'>
               <span class='label'
                     v-bind:class="[routine.freqcolor]">
@@ -106,22 +114,25 @@ export default {
   },
   created() {
     const resolution = resolve => {
-      // console.log(JSON.stringify(resolve.data));
       this.routines = resolve.data
       const uniqueCategoriesFn = R.compose(R.uniq, R.pluck('category'))
       const uniqueFrequenciesFn = R.compose(R.uniq, R.pluck('frequency'))
+      const uniqueDurationsFn = R.compose(R.uniq, R.pluck('duration'))
       const uniqueCats = uniqueCategoriesFn(this.routines)
       const uniqueFreqs = uniqueFrequenciesFn(this.routines)
-      console.log(JSON.stringify(uniqueFreqs));
+      const uniqueDurations = uniqueDurationsFn(this.routines)
       const catcolors = cycle(uniqueCats.length, labeltypes)
       const catcolormap = R.zipObj(uniqueCats, catcolors)
       const freqcolors = cycle(uniqueFreqs.length, labeltypes)
       const freqcolormap = R.zipObj(uniqueFreqs, freqcolors)
+      const durationcolors = cycle(uniqueDurations.length, labeltypes)
+      const durationcolormap = R.zipObj(uniqueDurations, durationcolors)
       const sortByCat = R.sortBy(R.prop('category'))
       this.routines = sortByCat(this.routines)
       this.routines.map(r => {
         r.catcolor = catcolormap[r.category]
         r.freqcolor = freqcolormap[r.frequency]
+        r.durationcolor = durationcolormap[r.duration]
       })
     }
     axios.get('http://localhost:3000/routines')
