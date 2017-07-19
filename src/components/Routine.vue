@@ -10,7 +10,7 @@
     </p>
     <hr/>
     <h4>
-      Stats.
+      Stats
     </h4>
     <p>
       # of durations: {{durations.length}} <br/>
@@ -29,31 +29,23 @@ import axios from 'axios'
 export default {
   name: 'Routine',
   created () {
-    const resolveDurations = resolve => {
-      this.durations = resolve.data
-    }
-    const resolveFreqs = resolve => {
-      this.frequencies = resolve.data
-    }
-    const resolveRoutine = resolve => {
-      this.routine = resolve.data
-    }
-    axios.get('http://localhost:3000/durations')
-      .then(resolveDurations)
-      .catch(error => {
-        alert("Error fetching durations: " + error)
-      })
-    axios.get('http://localhost:3000/frequencies')
-      .then(resolveFreqs)
-      .catch(error => {
-        alert("Error fetching frequencies: " + error)
-      })
     this.currentRoutineId = this.$route.params.id
-    axios.get('http://localhost:3000/routines/' + this.currentRoutineId)
-      .then(resolveRoutine)
-      .catch(error => {
-        alert("Error fetching routine #: " + this.currentRoutineId)
-      })
+    const getDurations = () => {
+      return axios.get('http://localhost:3000/durations')
+    }
+    const getFrequencies = () => {
+      return axios.get('http://localhost:3000/frequencies')
+    }
+    const getRoutine = () => {
+      return axios.get('http://localhost:3000/routines/' + this.currentRoutineId)
+      }
+    axios
+      .all([getDurations(), getFrequencies(), getRoutine()])
+      .then(axios.spread((durations, frequencies, routine) => {
+        this.routine = routine.data
+        this.durations = durations.data
+        this.frequencies = frequencies.data
+      }))
   },
   data() {
     return {
