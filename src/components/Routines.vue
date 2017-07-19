@@ -13,14 +13,20 @@
       </span>
     </h4>
     <table class='table table-hover table-condensed'>
+      <thead>
+        <th @click='setSortCol("name")'>Name</th>
+        <th @click='setSortCol("category")' v-if='!isCatSelected'>Category</th>
+        <th @click='setSortCol("duration")'>Duration</th>
+        <th @click='setSortCol("frequency")'>Frequency</th>
+      </thead>
       <tbody>
-        <tr v-for='routine in filterRoutinesByCategory' v-bind:key="routine.id">
+        <tr v-for='routine in filterRoutinesByCategory' v-bind:key="routine.guid">
           <td class='col-md-2'>
             <router-link :to='{name: "Routine", params: {id: routine.id } }'>
               {{ routine.name }}
             </router-link>
           </td>
-          <td v-if=' ! isCatSelected' class='col-md-2'>
+          <td v-if='!isCatSelected' class='col-md-2'>
             <span class='label'
                   :class="[routine.catcolor]"
                   @click='selectCategory(routine.category)'>
@@ -44,8 +50,8 @@
       </tbody>
     </table>
     <p>
-      <router-link to='/' class='label label-primary'>Home</router-link> &nbsp; &nbsp;
-      <span v-if='isCatSelected' class='label label-info' @click='resetSelection()'>
+      <router-link to='/' class='btn btn-sm btn-primary'>Home</router-link> &nbsp; &nbsp;
+      <span v-if='isCatSelected' class='btn btn-sm btn-info' @click='resetSelection()'>
         Show All Categories
       </span>
     </p>
@@ -60,6 +66,13 @@ import axios from 'axios'
 
 const labeltypes = ['label-info', 'label-primary', 'label-success',
                     'label-danger', 'label-warning', 'label-default']
+
+const sortsFns = {
+  name: R.sortBy(R.prop('name')),
+  category: R.sortBy(R.prop('category')),
+  duration: R.sortBy(R.prop('duration')),
+  frequency: R.sortBy(R.prop('frequency')),
+}
 
 export default {
   name: 'routines',
@@ -78,6 +91,9 @@ export default {
     resetSelection() {
       this.$data.isCatSelected = false
       this.$data.catSelected = ''
+    },
+    setSortCol: function (col) {
+      this.$data.routines = sortsFns[col](this.$data.routines)
     }
   },
   computed: {
@@ -112,6 +128,7 @@ export default {
         r.catcolor = catcolormap[r.category]
         r.freqcolor = freqcolormap[r.frequency]
         r.durationcolor = durationcolormap[r.duration]
+        r.guid = guid()
       })
     }
     axios.get('http://localhost:3000/routines')
@@ -120,5 +137,20 @@ export default {
         alert("There was an error fetching routines data. " + error)
       })
   }
+}
+
+/**
+ * Generates a GUID string.
+ * @returns {String} The generated GUID.
+ * @example af8a8416-6e18-a307-bd9c-f2c947bbb3aa
+ * @author Slavik Meltser (slavik@meltser.info).
+ * @link http://slavik.meltser.info/?p=142
+ */
+function guid() {
+    function _p8(s) {
+        var p = (Math.random().toString(16)+"000000000").substr(2,8);
+        return s ? "-" + p.substr(0,4) + "-" + p.substr(4,4) : p ;
+    }
+    return _p8() + _p8(true) + _p8(true) + _p8();
 }
 </script>

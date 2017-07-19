@@ -15,9 +15,9 @@
       # of frequencies: {{frequencies.length}} <br/>
     </p>
     <p>
-      <router-link class='label label-info' to='/routines'>Routines</router-link>
+      <router-link class='btn btn-sm btn-info' to='/routines'>Routines</router-link>
       &nbsp;
-      <router-link class='label label-info' to='/'>Home</router-link>
+      <router-link class='btn btn-sm btn-info' to='/'>Home</router-link>
     </p>
   </div>
 </template>

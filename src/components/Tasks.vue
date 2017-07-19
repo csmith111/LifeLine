@@ -9,7 +9,7 @@
         <p>
         The task details will appear here.
         </p>
-        <router-link  class='label label-info' to='/'>Home</router-link> &nbsp; &nbsp;
+        <router-link  class='btn btn-sm btn-warning' to='/'>Home</router-link> &nbsp; &nbsp;
       </div>
 
     </div>
