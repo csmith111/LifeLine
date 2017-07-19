@@ -12,7 +12,7 @@
       "id": "2",
       "name": "Meditation",
       "category": "well-being",
-      "notes": "Focus on the Breath",
+      "notes": "I... Breath In... Breath Out... Nirvana",
       "duration": "20 mins a day",
       "frequency": "everyday"
     },
@@ -28,7 +28,7 @@
       "id": "4",
       "name": "Commute",
       "category": "work",
-      "notes": "",
+      "notes": "To Work... To Home...",
       "duration": "2 hours a day",
       "frequency": "5 days a week"
     },
@@ -36,7 +36,7 @@
       "id": "5",
       "name": "TV",
       "category": "entertainment",
-      "notes": "Mostly Netflix",
+      "notes": "Mostly Netflix / NatGeo / History Channel",
       "duration": "1 hour a day",
       "frequency": "everyday"
     },
@@ -44,7 +44,7 @@
       "id": "6",
       "name": "Read",
       "category": "self-development",
-      "notes": "",
+      "notes": "Mind Expansion",
       "duration": "30 mins a day",
       "frequency": "4 days a week"
     },
@@ -52,7 +52,7 @@
       "id": "7",
       "name": "Reverie",
       "category": "life-process",
-      "notes": "",
+      "notes": "Monkey Mind!",
       "duration": "ongoing",
       "frequency": "everyday"
     },
@@ -60,7 +60,7 @@
       "id": "8",
       "name": "Sleep",
       "category": "life-process",
-      "notes": "",
+      "notes": "Z z z . . .",
       "duration": "7 hours a day",
       "frequency": "everyday"
     },
@@ -68,7 +68,7 @@
       "id": "9",
       "name": "Cook",
       "category": "life-process",
-      "notes": "",
+      "notes": "Sustenance / Energy",
       "duration": "1 hour a day",
       "frequency": "5 days a week"
     },
@@ -76,7 +76,7 @@
       "id": "10",
       "name": "Clean",
       "category": "life-process",
-      "notes": "Handle entropy",
+      "notes": "Handle Entropy",
       "duration": "1 hour",
       "frequency": "once a week"
     },
@@ -100,7 +100,7 @@
       "id": "13",
       "name": "Journal",
       "category": "well-being",
-      "notes": "",
+      "notes": "Dear Diary ...",
       "duration": "10 mins a day",
       "frequency": "5 days a week"
     },
@@ -116,7 +116,7 @@
       "id": "13",
       "name": "Play Music",
       "category": "well-being",
-      "notes": "",
+      "notes": "Banjo & Flute",
       "duration": "2 hours ",
       "frequency": "on weekends"
     },
@@ -124,7 +124,7 @@
       "id": "14",
       "name": "Work",
       "category": "work",
-      "notes": "Source of income",
+      "notes": "Source of Income",
       "duration": "8 hours a day",
       "frequency": "5 days a week"
     },
@@ -132,7 +132,7 @@
       "id": "15",
       "name": "Study",
       "category": "self-development",
-      "notes": "Exercise",
+      "notes": "Exercise of the Mind",
       "duration": "1 hour a day",
       "frequency": "5 days a week"
     },
@@ -140,7 +140,7 @@
       "id": "16",
       "name": "Hacking",
       "category": "self-development",
-      "notes": "Mental exercise",
+      "notes": "Mental stretch",
       "duration": "1 hour a day",
       "frequency": "4 days a week"
     },
@@ -148,7 +148,7 @@
       "id": "17",
       "name": "Eating-out",
       "category": "entertainment",
-      "notes": "Meet up with the guys over beer",
+      "notes": "Meet up with the guys over Beer",
       "duration": "1 hour a day",
       "frequency": "2 days a week"
     },
