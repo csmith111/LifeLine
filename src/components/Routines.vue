@@ -7,6 +7,10 @@
       <span class='text-capitalize text-info' @click='resetSelection()'>
         {{catSelected}}
       </span>
+      &nbsp; &nbsp;
+      <span v-if='isCatSelected' class='label label-default' @click='resetSelection()'>
+        Show All Categories
+      </span>
     </h4>
     <table class='table table-hover table-condensed'>
       <tbody>
@@ -63,7 +67,7 @@
     </table>
     <p>
       <router-link to='/' class='label label-primary'>Home</router-link> &nbsp; &nbsp;
-      <span v-if='isCatSelected' class='label label-info' @click='resetSelection()'>
+      <span v-if='isCatSelected' class='label label-default' @click='resetSelection()'>
         Show All Categories
       </span>
     </p>

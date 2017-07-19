@@ -9,6 +9,11 @@
     <p>
       # of durations: {{durations.length}} <br/>
       # of frequencies: {{frequencies.length}} <br/>
+      <hr/>
+      Routine: {{ routine.name }} <br/>
+      Cateory: {{ routine.category }} <br/>
+      Duration: {{ routine.duration }} <br/>
+      Frequency: {{ routine.frequency }} <br/>
     </p>
     <p>
       <router-link class='label label-info' to='/routines'>Routines</router-link>
@@ -30,6 +35,9 @@ export default {
     const resolveFreqs = resolve => {
       this.frequencies = resolve.data
     }
+    const resolveRoutine = resolve => {
+      this.routine = resolve.data
+    }
     axios.get('http://localhost:3000/durations')
       .then(resolveDurations)
       .catch(error => {
@@ -40,12 +48,19 @@ export default {
       .catch(error => {
         alert("Error fetching frequencies: " + error)
       })
+    this.currentRoutineId = this.$route.params.id
+    axios.get('http://localhost:3000/routines/' + this.currentRoutineId)
+      .then(resolveRoutine)
+      .catch(error => {
+        alert("Error fetching routine: " + this.currentRoutineId)
+      })
   },
   data() {
     return {
       routine: {},
       durations: [],
       frequencies: [],
+      currentRoutineId: 0,
     }
   }
 }
