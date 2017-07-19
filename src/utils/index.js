@@ -11,8 +11,9 @@
  *
  * @param {Int}   n     # elements wanted in the output list.
  * @param {[Any]} list  input array list.
+ * @returns {[Any]} list  input array list, as long as n value.
  */
-function cycle(n, list) {
+function cycle (n, list) {
   if (n <= 0 || list.length === 0) {
     return []
   }
