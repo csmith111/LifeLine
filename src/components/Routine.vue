@@ -1,20 +1,18 @@
 <template>
   <div class='edit-routine'>
-    <h2>
-      Routine
-    </h2>
+    <h2>Routine</h2>
+    <p>
       Routine: {{ routine.name }} <br/>
-      Cateory: {{ routine.category }} <br/>
+      Category: {{ routine.category }} <br/>
       Duration: {{ routine.duration }} <br/>
       Frequency: {{ routine.frequency }} <br/>
     </p>
     <hr/>
-    <h4>
-      Stats
-    </h4>
+    <h4>Stats</h4>
     <p>
       # of durations: {{durations.length}} <br/>
       # of frequencies: {{frequencies.length}} <br/>
+    </p>
     <p>
       <router-link class='label label-info' to='/routines'>Routines</router-link>
       &nbsp;
