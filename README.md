@@ -1,6 +1,6 @@
-# lifeline
+# Lifeline
 
-> Record your lifeline
+> Record your Lifeline
 
 ## Build Setup
 
@@ -10,16 +10,35 @@ yarn install
 
 # serve with hot reload at localhost:8080
 yarn dev
+
 # build for production with minification
-yarn run build
+yarn build
 
 # build for production and view the bundle analyzer report
-yarn run build --report
+yarn build --report
 ```
 
-Additional dependencies:
+## App Run
 ```bash
-yarn add ramda mongoose express body-parser 
+# Install `json-server` globally
+yarn global add json-server
+
+cd data
+# Create the data to serve to app in `db.js`
+
+# Convert `db.js` to db.json, which will be served by `json-server`
+./db2json.sh
+
+# Invoke `json-server` to serve our data.
+json-server db.json
+
+# Move back to parent directory
+cd ..
+
+# Start the webpack bundle to compile and serve our app.
+yarn dev
+
+# App is at: http://localhost:8080
 ```
 
-For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+Details of Lifeline are at the [Wiki](https://github.com/vijaypatil/LifeLine/wiki).
