@@ -4,13 +4,13 @@
       Routines
     </h2>
     <h4 v-if='isCatSelected || isDurSelected || isFreqSelected'>
-      <span v-if='isCatSelected' class='text-capitalize text-info' @click='resetSelection()'>
+      <span v-if='isCatSelected' class='text-capitalize' @click='resetSelection()'>
         Category: {{catSelected}}
       </span>
-      <span v-if='isDurSelected' class='text-capitalize text-info' @click='resetSelection()'>
+      <span v-if='isDurSelected' class='text-capitalize' @click='resetSelection()'>
         Duration: {{durSelected}}
       </span>
-      <span v-if='isFreqSelected' class='text-capitalize text-info' @click='resetSelection()'>
+      <span v-if='isFreqSelected' class='text-capitalize' @click='resetSelection()'>
         Frequency: {{freqSelected}}
       </span>
       &nbsp; &nbsp;
