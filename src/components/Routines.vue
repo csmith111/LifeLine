@@ -3,24 +3,33 @@
     <h2>
       Routines
     </h2>
-    <h4 v-if='isCatSelected'>
-      <span class='text-capitalize text-info' @click='resetSelection()'>
-        {{catSelected}}
+    <h4 v-if='isCatSelected || isDurSelected || isFreqSelected'>
+      <span v-if='isCatSelected' class='text-capitalize' @click='resetSelection()'>
+        Category: {{catSelected}}
+      </span>
+      <span v-if='isDurSelected' class='text-capitalize' @click='resetSelection()'>
+        Duration: {{durSelected}}
+      </span>
+      <span v-if='isFreqSelected' class='text-capitalize' @click='resetSelection()'>
+        Frequency: {{freqSelected}}
       </span>
       &nbsp; &nbsp;
-      <span v-if='isCatSelected' class='label label-info' @click='resetSelection()'>
-        Show All Categories
+      <span v-if='isCatSelected || isDurSelected || isFreqSelected'
+            class='label label-info'
+            @click='resetSelection()'>
+        Show All
       </span>
     </h4>
     <table class='table table-hover table-condensed'>
       <thead>
         <th @click='setSortCol("name")'>Name</th>
         <th @click='setSortCol("category")' v-if='!isCatSelected'>Category</th>
-        <th @click='setSortCol("duration")'>Duration</th>
-        <th @click='setSortCol("frequency")'>Frequency</th>
+        <th @click='setSortCol("duration")' v-if='!isDurSelected'>Duration</th>
+        <th @click='setSortCol("frequency")' v-if='!isFreqSelected'>Frequency</th>
+        <th>Notes</th>
       </thead>
       <tbody>
-        <tr v-for='routine in filterRoutinesByCategory' v-bind:key="routine.guid">
+        <tr v-for='routine in filterRoutines' v-bind:key="routine.guid">
           <td class='col-md-2'>
             <router-link :to='{name: "Routine", params: {id: routine.id } }'>
               {{ routine.name }}
@@ -33,26 +42,30 @@
               {{ routine.category }}
             </span>
           </td>
-          <td class='col-md-2'>
+          <td v-if='!isDurSelected' class='col-md-2'>
             <span class='label'
-                  :class="[routine.durationcolor]">
+                  :class="[routine.durationcolor]"
+                  @click='selectDuration(routine.duration)'>
               {{routine.duration}}
             </span>
           </td>
-          <td class='col-md-2'>
+          <td v-if='!isFreqSelected' class='col-md-2'>
             <span class='label'
-                  :class="[routine.freqcolor]">
+                  :class="[routine.freqcolor]"
+                  @click='selectFrequency(routine.frequency)'>
               {{routine.frequency}}
             </span>
           </td>
-          <td class='text-muted'>{{routine.notes}}</td>
+          <td> <em>{{routine.notes}}</em></td>
         </tr>
       </tbody>
     </table>
     <p>
       <router-link to='/' class='btn btn-sm btn-primary'>Home</router-link> &nbsp; &nbsp;
-      <span v-if='isCatSelected' class='btn btn-sm btn-info' @click='resetSelection()'>
-        Show All Categories
+      <span v-if='isCatSelected || isDurSelected || isFreqSelected'
+            class='btn btn-sm btn-info'
+            @click='resetSelection()'>
+        Show All
       </span>
     </p>
   </div>
@@ -81,26 +94,63 @@ export default {
       routines: [],
       isCatSelected: false,
       catSelected: '',
+      isDurSelected: false,
+      durSelected: '',
+      isFreqSelected: false,
+      freqSelected: '',
     }
   },
   methods: {
     selectCategory: function (category) {
+      if (this.$data.isDurSelected || this.$data.isFreqSelected) {
+        return
+      }
       this.$data.isCatSelected = !this.$data.isCatSelected
       this.$data.catSelected = this.$data.isCatSelected ? category : ''
     },
+    selectDuration: function (duration) {
+      if (this.$data.isCatSelected || this.$data.isFreqSelected) {
+        return
+      }
+      this.$data.isDurSelected = !this.$data.isDurSelected
+      this.$data.durSelected = this.$data.isDurSelected ? duration : ''
+    },
+    selectFrequency: function (freq) {
+      if (this.$data.isCatSelected || this.$data.isDurSelected) {
+        return
+      }
+      this.$data.isFreqSelected = !this.$data.isFreqSelected
+      this.$data.freqSelected = this.$data.isFreqSelected ? freq : ''
+    },
     resetSelection() {
-      this.$data.isCatSelected = false
-      this.$data.catSelected = ''
+      if (this.$data.isCatSelected) {
+        this.$data.isCatSelected = false
+        this.$data.catSelected = ''
+      } else if (this.$data.isDurSelected) {
+        this.$data.isDurSelected = false
+        this.$data.durSelected = ''
+      } else if (this.$data.isFreqSelected) {
+        this.$data.isFreqSelected = false
+        this.$data.freqSelected = ''
+      }
     },
     setSortCol: function (col) {
       this.$data.routines = sortsFns[col](this.$data.routines)
     }
   },
   computed: {
-    filterRoutinesByCategory() {
+    filterRoutines() {
       if (this.$data.isCatSelected) {
         return this.$data.routines.filter(r => {
           return this.$data.catSelected === r.category
+        })
+      } if (this.$data.isDurSelected) {
+        return this.$data.routines.filter(r => {
+          return this.$data.durSelected === r.duration
+        })
+      } if (this.$data.isFreqSelected) {
+        return this.$data.routines.filter(r => {
+          return this.$data.freqSelected === r.frequency
         })
       } else {
         return this.$data.routines

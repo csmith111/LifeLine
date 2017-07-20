@@ -1,6 +1,6 @@
 # Lifeline
 
-> Record your Lifeline
+> Record your Lifeline, and optimize your life!
 
 ## Build Setup
 
