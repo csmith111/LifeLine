@@ -9,7 +9,7 @@
       </span>
       &nbsp; &nbsp;
       <span v-if='isCatSelected' class='label label-info' @click='resetSelection()'>
-        Show All Categories
+        Show All
       </span>
     </h4>
     <table class='table table-hover table-condensed'>
@@ -18,6 +18,7 @@
         <th @click='setSortCol("category")' v-if='!isCatSelected'>Category</th>
         <th @click='setSortCol("duration")'>Duration</th>
         <th @click='setSortCol("frequency")'>Frequency</th>
+        <th>Notes</th>
       </thead>
       <tbody>
         <tr v-for='routine in filterRoutinesByCategory' v-bind:key="routine.guid">
@@ -45,14 +46,14 @@
               {{routine.frequency}}
             </span>
           </td>
-          <td class='text-muted'>{{routine.notes}}</td>
+          <td> <em>{{routine.notes}}</em></td>
         </tr>
       </tbody>
     </table>
     <p>
       <router-link to='/' class='btn btn-sm btn-primary'>Home</router-link> &nbsp; &nbsp;
       <span v-if='isCatSelected' class='btn btn-sm btn-info' @click='resetSelection()'>
-        Show All Categories
+        Show All
       </span>
     </p>
   </div>

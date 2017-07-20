@@ -5,7 +5,7 @@
       "name": "Yoga/Kriya",
       "category": "fitness",
       "notes": "Perform asanas",
-      "duration": "40 mins a day",
+      "duration": "40 mins",
       "frequency": "6 days a week"
     },
     {
@@ -13,7 +13,7 @@
       "name": "Meditation",
       "category": "well-being",
       "notes": "I... Breath In... Breath Out... Nirvana",
-      "duration": "20 mins a day",
+      "duration": "20 mins",
       "frequency": "everyday"
     },
     {
@@ -21,7 +21,7 @@
       "name": "Workout",
       "category": "fitness",
       "notes": "Gym",
-      "duration": "30 mins a day",
+      "duration": "30 mins",
       "frequency": "5 days a week"
     },
     {
@@ -29,7 +29,7 @@
       "name": "Commute",
       "category": "work",
       "notes": "To Work... To Home...",
-      "duration": "2 hours a day",
+      "duration": "2 hours",
       "frequency": "5 days a week"
     },
     {
@@ -37,7 +37,7 @@
       "name": "TV",
       "category": "entertainment",
       "notes": "Mostly Netflix / NatGeo / History Channel",
-      "duration": "1 hour a day",
+      "duration": "1 hour",
       "frequency": "everyday"
     },
     {
@@ -45,7 +45,7 @@
       "name": "Read",
       "category": "self-development",
       "notes": "Mind Expansion",
-      "duration": "30 mins a day",
+      "duration": "30 mins",
       "frequency": "4 days a week"
     },
     {
@@ -61,7 +61,7 @@
       "name": "Sleep",
       "category": "life-process",
       "notes": "Z z z . . .",
-      "duration": "7 hours a day",
+      "duration": "7 hours",
       "frequency": "everyday"
     },
     {
@@ -69,7 +69,7 @@
       "name": "Cook",
       "category": "life-process",
       "notes": "Sustenance / Energy",
-      "duration": "1 hour a day",
+      "duration": "1 hour",
       "frequency": "5 days a week"
     },
     {
@@ -77,7 +77,7 @@
       "name": "Clean",
       "category": "life-process",
       "notes": "Handle Entropy",
-      "duration": "1 hour",
+      "duration": "2 hours",
       "frequency": "once a week"
     },
     {
@@ -93,7 +93,7 @@
       "name": "Read to Kids",
       "category": "family",
       "notes": "",
-      "duration": "30 mins a day",
+      "duration": "30 mins",
       "frequency": "5 days a week"
     },
     {
@@ -101,7 +101,7 @@
       "name": "Journal",
       "category": "well-being",
       "notes": "Dear Diary ...",
-      "duration": "10 mins a day",
+      "duration": "10 mins",
       "frequency": "5 days a week"
     },
     {
@@ -109,7 +109,7 @@
       "name": "Listen to Music",
       "category": "entertainment",
       "notes": "",
-      "duration": "30 mins a day",
+      "duration": "30 mins",
       "frequency": "everyday"
     },
     {
@@ -125,7 +125,7 @@
       "name": "Work",
       "category": "work",
       "notes": "Source of Income",
-      "duration": "8 hours a day",
+      "duration": "8 hours",
       "frequency": "5 days a week"
     },
     {
@@ -133,7 +133,7 @@
       "name": "Study",
       "category": "self-development",
       "notes": "Exercise of the Mind",
-      "duration": "1 hour a day",
+      "duration": "1 hour",
       "frequency": "5 days a week"
     },
     {
@@ -141,7 +141,7 @@
       "name": "Hacking",
       "category": "self-development",
       "notes": "Mental stretch",
-      "duration": "1 hour a day",
+      "duration": "1 hour",
       "frequency": "4 days a week"
     },
     {
@@ -149,7 +149,7 @@
       "name": "Eating-out",
       "category": "entertainment",
       "notes": "Meet up with the guys over Beer",
-      "duration": "1 hour a day",
+      "duration": "1 hour",
       "frequency": "2 days a week"
     },
     {
@@ -157,31 +157,25 @@
       "name": "Outing",
       "category": "family",
       "notes": "Hang out with the family",
-      "duration": "5 hours a day",
+      "duration": "5 hours",
       "frequency": "on weekends"
     }
   ],
   "durations": [
-    "10 mins a day",
-    "20 mins a day",
-    "30 mins a day",
-    "45 mins a day",
+    "10 mins",
+    "20 mins",
+    "30 mins",
+    "45 mins",
     "1 hour",
-    "1 hour a day",
-    "2 hours ",
-    "2 hours a day",
+    "2 hours",
     "3 hours",
-    "3 hours a day",
     "4 hours",
-    "4 hours a day",
     "5 hours",
-    "5 hours a day",
     "6 hours",
-    "6 hours a day",
     "7 hours",
-    "7 hours a day",
     "8 hours",
-    "8 hours a day",
+    "9 hours",
+    "10 hours",
     "ongoing"
   ],
   "frequencies": [
