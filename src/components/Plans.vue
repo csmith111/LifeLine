@@ -1,7 +1,7 @@
 <template>
   <div class="plans">
     <h2>
-      Plans
+      Plans <small> &mdash; These are your long-term time-bound hopes, intentions &amp; goals.</small>
     </h2>
     <div class="panel panel-default" >
 

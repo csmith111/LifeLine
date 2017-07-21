@@ -1,7 +1,7 @@
 <template>
   <div class="tasks">
     <h2>
-      Tasks
+      Tasks <small> &mdash; These are your short-term goals.</small>
     </h2>
     <div class="panel panel-default" >
 
