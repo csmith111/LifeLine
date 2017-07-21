@@ -1,7 +1,7 @@
 <template>
   <div class="routines">
     <h2>
-      Routines
+      Routines <small> &mdash; These actions form your day-to-day life.</small>
     </h2>
     <h4 v-if='isCatSelected || isDurSelected || isFreqSelected'>
       <span v-if='isCatSelected' class='text-capitalize' @click='resetSelection()'>
