@@ -1,7 +1,7 @@
 <template>
   <div class="routines">
     <h2>
-      Routines <small> &mdash; These actions form your day-to-day life.</small>
+      Routines <small> &mdash; These activities form your day-to-day life.</small>
     </h2>
     <h4 v-if='isCatSelected || isDurSelected || isFreqSelected'>
       <span v-if='isCatSelected' class='text-capitalize' @click='resetSelection()'>
@@ -22,14 +22,32 @@
     </h4>
     <table class='table table-hover table-condensed'>
       <thead>
-        <th @click='setSortCol("name")'>Name</th>
-        <th @click='setSortCol("category")' v-if='!isCatSelected'>Category</th>
-        <th @click='setSortCol("duration")' v-if='!isDurSelected'>Duration</th>
-        <th @click='setSortCol("frequency")' v-if='!isFreqSelected'>Frequency</th>
-        <th>Notes</th>
+        <tr>
+          <th @click='setSortCol("name")' title='Click to sort by column'>
+            Name &nbsp;
+            <span>
+              <span class='text-muted glyphicon glyphicon-chevron-up' aria-hidden="true"></span>
+            </span></th>
+          <th @click='setSortCol("category")' v-if='!isCatSelected' title='Click header to sort by this column'>
+            Category &nbsp;
+            <span>
+              <span class='text-muted glyphicon glyphicon-chevron-up' aria-hidden="true"></span>
+            </span>
+          <th @click='setSortCol("duration")' v-if='!isDurSelected' title='Click header to sort by this column'>
+            Duration &nbsp;
+            <span>
+              <span class='text-muted glyphicon glyphicon-chevron-up' aria-hidden="true"></span>
+            </span></th>
+          <th @click='setSortCol("frequency")' v-if='!isFreqSelected' title='Click header to sort by this column'>
+            Frequency &nbsp;
+            <span>
+              <span class='text-muted glyphicon glyphicon-chevron-up' aria-hidden="true"></span>
+            </span></th>
+          <th>Notes</th>
+        </tr>
       </thead>
       <tbody>
-        <tr v-for='routine in filterRoutines' v-bind:key="routine.guid">
+        <tr v-for='routine in filterRoutines' :key="routine.guid">
           <td class='col-md-2'>
             <router-link :to='{name: "Routine", params: {id: routine.id } }'>
               {{ routine.name }}
@@ -60,12 +78,39 @@
         </tr>
       </tbody>
     </table>
+    <div v-if='inAdding'>
+      <form class="form-inline" style="margin-bottom: 0.5em">
+        <div class="form-group">
+          <input type="text" class="form-control" id="fld-routine" placeholder="Routine">
+        </div>
+        <div class="form-group">
+          <select class="form-control">
+            <option v-for='cat in ccategories' :key='cat'>{{cat}}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <select class="form-control">
+            <option v-for='dur in cdurations' :key='dur'>{{dur}}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <select class="form-control">
+            <option v-for='freq in cfrequencies' :key='freq'>{{freq}}</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-info"> OK </button> &nbsp; &nbsp;
+        <button class="btn btn-warning" @click='isAdding()'> Cancel </button>
+      </form>
+    </div>
     <p>
       <router-link to='/' class='btn btn-sm btn-primary'>Home</router-link> &nbsp; &nbsp;
       <span v-if='isCatSelected || isDurSelected || isFreqSelected'
             class='btn btn-sm btn-info'
             @click='resetSelection()'>
         Show All
+      </span>
+      <span v-if='!inAdding' class='btn btn-sm btn-info' @click='isAdding()'>
+        New Routine
       </span>
     </p>
   </div>
@@ -98,9 +143,22 @@ export default {
       durSelected: '',
       isFreqSelected: false,
       freqSelected: '',
+      inAdding: false,
+      ccategories: [
+        'family', 'self-dev', 'health'
+      ],
+      cdurations: [
+        '1 hour', '2 hours', '3 hours'
+      ],
+      cfrequencies: [
+        'once a week', '2 days a week', '3 days a week'
+      ],
     }
   },
   methods: {
+    isAdding: function() {
+      this.$data.inAdding = !this.$data.inAdding
+    },
     selectCategory: function (category) {
       if (this.$data.isDurSelected || this.$data.isFreqSelected) {
         return
@@ -134,7 +192,7 @@ export default {
         this.$data.freqSelected = ''
       }
     },
-    setSortCol: function (col) {
+    setSortCol: function(col) {
       this.$data.routines = sortsFns[col](this.$data.routines)
     }
   },
@@ -158,7 +216,7 @@ export default {
     }
   },
   created() {
-    const resolution = resolve => {
+    const resolveRoutine = resolve => {
       this.routines = resolve.data
       const uniqueCategoriesFn = R.compose(R.uniq, R.pluck('category'))
       const uniqueFrequenciesFn = R.compose(R.uniq, R.pluck('frequency'))
@@ -182,7 +240,7 @@ export default {
       })
     }
     axios.get('http://localhost:3000/routines')
-      .then(resolution)
+      .then(resolveRoutine)
       .catch(error => {
         alert("There was an error fetching routines data. " + error)
       })

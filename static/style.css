@@ -10,3 +10,6 @@ h4 {
 h2 small {
   font-size: 50%
 }
+th {
+  padding-left: 0.5em;
+}
