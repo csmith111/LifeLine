@@ -98,6 +98,7 @@
             <option v-for='freq in cfrequencies' :key='freq'>{{freq}}</option>
           </select>
         </div>
+        &nbsp; &nbsp;
         <button type="submit" class="btn btn-info"> OK </button> &nbsp; &nbsp;
         <button class="btn btn-warning" @click='isAdding()'> Cancel </button>
       </form>
@@ -238,6 +239,9 @@ export default {
         r.durationcolor = durationcolormap[r.duration]
         r.guid = guid()
       })
+      this.ccategories = uniqueCats
+      this.cdurations = uniqueDurations
+      this.cfrequencies = uniqueFreqs
     }
     axios.get('http://localhost:3000/routines')
       .then(resolveRoutine)
@@ -256,9 +260,9 @@ export default {
  */
 function guid() {
     function _p8(s) {
-        var p = (Math.random().toString(16)+"000000000").substr(2,8);
-        return s ? "-" + p.substr(0,4) + "-" + p.substr(4,4) : p ;
+        var p = (Math.random().toString(16)+"000000000").substr(2, 8)
+        return s ? "-" + p.substr(0, 4) + "-" + p.substr(4, 4) : p
     }
-    return _p8() + _p8(true) + _p8(true) + _p8();
+    return _p8() + _p8(true) + _p8(true) + _p8()
 }
 </script>
