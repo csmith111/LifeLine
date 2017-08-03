@@ -74,7 +74,12 @@
               {{routine.frequency}}
             </span>
           </td>
-          <td> <em>{{routine.notes}}</em></td>
+          <td><em>{{routine.notes}}</em></td>
+          <td>
+            <span class='glyphicon glyphicon-edit'></span>
+            &nbsp; &nbsp;
+            <span class='glyphicon glyphicon-ban-circle'></span>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -177,6 +182,12 @@ const RoutineVue = {
   methods: {
     toggleRoutineEditor: function() {
       this.inNewRoutine = !this.inNewRoutine
+      if (this.inNewRoutine) {
+        this.ncat = this.ccategories.length > 0 ? this.ccategories[0] : ''
+        this.nfreq = this.cfrequencies.length > 0 ? this.cfrequencies[0] : ''
+        this.ndur = this.cdurations.length > 0 ? this.cdurations[0] : ''
+        this.nnote = ''
+      }
     },
     toggleCategoryEditor: function() {
       this.inNewCat = !this.inNewCat
@@ -184,29 +195,33 @@ const RoutineVue = {
     saveRoutine: function() {
       console.log('In saveRoutine(): ' + this.nroutine);
       const lc = this.nroutine.trim()
+      if (lc === '') {
+        miniToastr.error('Routine should be defined')
+        document.querySelector('#fld-routine').focus()
+        return
+      }
       if (this.routines.findIndex((r) => r.name.toLowerCase() === lc) >= 0) {
         miniToastr.error('This routine is already defined.')
         document.querySelector('#fld-routine').focus()
-      } else {
-        const newroutine = {
-          name: this.nroutine,
-          category: this.ncat,
-          frequency: this.nfreq,
-          duration: this.ndur,
-          notes: this.nnote,
-          id: guid(),
-        }
-        console.log('newroutine:', JSON.stringify(newroutine));
-        axios.post('http://localhost:3000/routines', newroutine)
-          .then(() => {
-            this.nroutine = ''
-            miniToastr.success('Routine saved.')
-            this.fetchRoutines()
-          })
-          .catch(error => {
-            alert("Error posting routine: " + error)
-          })
+        return
       }
+      const newroutine = {
+        name: this.nroutine,
+        category: this.ncat,
+        frequency: this.nfreq,
+        duration: this.ndur,
+        notes: this.nnote,
+        id: guid(),
+      }
+      axios.post('http://localhost:3000/routines', newroutine)
+        .then(() => {
+          this.nnote = this.nroutine = ''
+          miniToastr.success('Routine saved.')
+          this.fetchRoutines()
+        })
+        .catch(error => {
+          alert("Error posting routine: " + error)
+        })
     },
     saveCategory: function() {
       const lc = this.ncategory.trim()
@@ -218,7 +233,6 @@ const RoutineVue = {
         miniToastr.success('Category added successfully.')
         this.ncategory = ''
       }
-      console.log('Cat list:', JSON.stringify(this.ccategories))
     },
     selectCategory: function (category) {
       if (this.isDurSelected || this.isFreqSelected) {
@@ -257,7 +271,7 @@ const RoutineVue = {
       this.routines = sortsFns[col](this.routines)
     },
     fetchRoutines() {
-      const resolveRoutine = (resolve) => {
+      const resolveRoutines = (resolve) => {
         this.routines = resolve.data
         const uniqueCategoriesFn = R.compose(R.uniq, R.pluck('category'))
         const uniqueFrequenciesFn = R.compose(R.uniq, R.pluck('frequency'))
@@ -280,11 +294,21 @@ const RoutineVue = {
           r.guid = guid()
         })
         this.ccategories = uniqueCats
-        this.cdurations = uniqueDurations
-        this.cfrequencies = uniqueFreqs
+        // this.cdurations = uniqueDurations
+        // this.cfrequencies = uniqueFreqs
       }
+      axios.get('http://localhost:3000/frequencies')
+        .then(resolve => this.cfrequencies = resolve.data)
+        .catch(error => {
+          alert("Error fetching routines: " + error)
+        })
+      axios.get('http://localhost:3000/durations')
+        .then(resolve => this.cdurations = resolve.data)
+        .catch(error => {
+          alert("Error fetching durations: " + error)
+        })
       axios.get('http://localhost:3000/routines')
-        .then(resolveRoutine)
+        .then(resolveRoutines)
         .catch(error => {
           alert("Error fetching routines: " + error)
         })
