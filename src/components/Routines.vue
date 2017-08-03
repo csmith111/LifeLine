@@ -76,14 +76,14 @@
           </td>
           <td><em>{{routine.notes}}</em></td>
           <td>
-            <span class='glyphicon glyphicon-edit'></span>
+            <span class='text-muted glyphicon glyphicon-edit' @click='setRoutineInEditMode(routine.id)'></span>
             &nbsp; &nbsp;
-            <span class='glyphicon glyphicon-ban-circle'></span>
+            <span class='text-muted glyphicon glyphicon-ban-circle'></span>
           </td>
         </tr>
       </tbody>
     </table>
-    <div v-if='inNewRoutine'>
+    <div v-if='inShowRoutineEditor'>
       <form class="form-inline" style="margin-bottom: 0.5em">
         <div class="form-group">
           <input type="text" class="form-control" id="fld-routine" v-model='nroutine' placeholder="Routine">
@@ -128,7 +128,7 @@
             @click='resetSelection()'>
         Show All
       </span>  &nbsp; &nbsp;
-      <span v-if='!inNewRoutine' class='btn btn-sm btn-info' @click='toggleRoutineEditor()'>
+      <span v-if='!inShowRoutineEditor' class='btn btn-sm btn-info' @click='toggleRoutineEditor()'>
         New Routine
       </span>  &nbsp; &nbsp;
       <span v-if='!inNewCat' class='btn btn-sm btn-info' @click='toggleCategoryEditor()'>
@@ -163,6 +163,7 @@ const RoutineVue = {
       ccategories: [],            // Computed categories.
       cdurations: [],             // Also computed.
       cfrequencies: [],           // Ditto.
+      routineId: '',
       nroutine: '',               // Values captured in UI.
       ncategory: '',
       ncat: '',
@@ -175,32 +176,61 @@ const RoutineVue = {
       isCatSelected: false,       // Indicates the current applicable filter.
       isDurSelected: false,
       isFreqSelected: false,
-      inNewRoutine: false,        // Edit status
+      inShowRoutineEditor: false,        // Edit status
       inNewCat: false,
+      mode: 'new',
     }
   },
   methods: {
-    toggleRoutineEditor: function() {
-      this.inNewRoutine = !this.inNewRoutine
-      if (this.inNewRoutine) {
-        this.ncat = this.ccategories.length > 0 ? this.ccategories[0] : ''
-        this.nfreq = this.cfrequencies.length > 0 ? this.cfrequencies[0] : ''
-        this.ndur = this.cdurations.length > 0 ? this.cdurations[0] : ''
-        this.nnote = ''
+    toggleRoutineEditor: function(routineId) {
+      this.inShowRoutineEditor = !this.inShowRoutineEditor
+      if (this.inShowRoutineEditor) {
+        if (this.mode === 'new') {
+          this.ncat = this.ccategories.length > 0 ? this.ccategories[0] : ''
+          this.nfreq = this.cfrequencies.length > 0 ? this.cfrequencies[0] : ''
+          this.ndur = this.cdurations.length > 0 ? this.cdurations[0] : ''
+          this.nnote = ''
+        } else {
+          const indexToEdit = this.routines.findIndex(r => r.id === routineId)
+          if (indexToEdit >= 0) {
+            const rec = this.routines[indexToEdit]
+            console.log(JSON.stringify(rec));
+            this.routineId = routineId
+            this.nroutine = rec.name
+            this.ncat = rec.category
+            this.nfreq = rec.frequency
+            this.ndur = rec.duration
+            this.nnote = rec.notes
+          }
+        }
       }
     },
     toggleCategoryEditor: function() {
       this.inNewCat = !this.inNewCat
+      this.mode = 'new'
+    },
+    setRoutineInEditMode(routineId) {
+      console.log('inShowRoutineEditor');
+      this.inShowRoutineEditor = false; // ! Important !.
+      this.mode = 'edit'
+      this.toggleRoutineEditor(routineId)
+      setTimeout(() => { // Give it half a second for the editor to show up.
+        document.querySelector('#fld-routine').focus()
+      }, 500)
     },
     saveRoutine: function() {
-      console.log('In saveRoutine(): ' + this.nroutine);
       const lc = this.nroutine.trim()
       if (lc === '') {
         miniToastr.error('Routine should be defined')
         document.querySelector('#fld-routine').focus()
         return
       }
-      if (this.routines.findIndex((r) => r.name.toLowerCase() === lc) >= 0) {
+      let foundIndex = this.routines.findIndex((r) => r.name.toLowerCase() === lc)
+      if (
+        ((this.mode === 'new') && (foundIndex >= 0))
+        ||
+        ((this.mode === 'edit') && (foundIndex >= 0) && this.routines[foundIndex].id === this.routineId)
+        ) {
         miniToastr.error('This routine is already defined.')
         document.querySelector('#fld-routine').focus()
         return
@@ -213,15 +243,30 @@ const RoutineVue = {
         notes: this.nnote,
         id: guid(),
       }
-      axios.post('http://localhost:3000/routines', newroutine)
-        .then(() => {
-          this.nnote = this.nroutine = ''
-          miniToastr.success('Routine saved.')
-          this.fetchRoutines()
-        })
-        .catch(error => {
-          alert("Error posting routine: " + error)
-        })
+      if (this.mode === 'new') {
+        axios.post('http://localhost:3000/routines', newroutine)
+          .then(() => {
+            this.nnote = this.nroutine = ''
+            miniToastr.success('Routine saved.')
+            this.fetchRoutines()
+          })
+          .catch(error => {
+            alert("Error posting routine: " + error)
+          })
+      } else {
+        axios.put(`http://localhost:3000/routines/${this.routineId}`, newroutine)
+          .then(() => {
+            this.nnote = this.nroutine = ''
+            miniToastr.success('Routine updated.')
+            this.fetchRoutines()
+            this.inShowRoutineEditor = true
+            this.toggleRoutineEditor()
+          })
+          .catch(error => {
+            alert("Error editing routine: " + error)
+          })
+
+      }
     },
     saveCategory: function() {
       const lc = this.ncategory.trim()

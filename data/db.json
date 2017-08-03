@@ -159,6 +159,14 @@
       "notes": "Hang out with the family",
       "duration": "5 hours",
       "frequency": "on weekends"
+    },
+    {
+      "name": "check2",
+      "category": "fitness",
+      "frequency": "1 day a week",
+      "duration": "1 min",
+      "notes": "chech check2",
+      "id": "0481b599-594a-1a4d-07b5-3b5ef7ec538b"
     }
   ],
   "durations": [
