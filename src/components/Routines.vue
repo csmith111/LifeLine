@@ -78,7 +78,7 @@
           <td>
             <span class='text-muted glyphicon glyphicon-edit' @click='setRoutineInEditMode(routine.id)'></span>
             &nbsp; &nbsp;
-            <span class='text-muted glyphicon glyphicon-ban-circle'></span>
+            <span class='text-muted glyphicon glyphicon-ban-circle' @click='deleteRoutine(routine.id)'></span>
           </td>
         </tr>
       </tbody>
@@ -209,8 +209,19 @@ const RoutineVue = {
       this.inNewCat = !this.inNewCat
       this.mode = 'new'
     },
+    deleteRoutine(routineId) {
+      if (confirm('Are you sure you wish to delete this routine?')) {
+        axios.delete(`http://localhost:3000/routines/${routineId}`)
+          .then(() => {
+            miniToastr.success('Routine deleted.')
+            this.fetchRoutines()
+          })
+          .catch(error => {
+            alert("Error posting routine: " + error)
+          })
+      }
+    },
     setRoutineInEditMode(routineId) {
-      console.log('inShowRoutineEditor');
       this.inShowRoutineEditor = false; // ! Important !.
       this.mode = 'edit'
       this.toggleRoutineEditor(routineId)
@@ -226,11 +237,9 @@ const RoutineVue = {
         return
       }
       let foundIndex = this.routines.findIndex((r) => r.name.toLowerCase() === lc)
-      if (
-        ((this.mode === 'new') && (foundIndex >= 0))
-        ||
-        ((this.mode === 'edit') && (foundIndex >= 0) && this.routines[foundIndex].id === this.routineId)
-        ) {
+      if (((this.mode === 'new') && (foundIndex >= 0))
+          ||
+          ((this.mode === 'edit') && (foundIndex >= 0) && this.routines[foundIndex].id !== this.routineId)) {
         miniToastr.error('This routine is already defined.')
         document.querySelector('#fld-routine').focus()
         return
