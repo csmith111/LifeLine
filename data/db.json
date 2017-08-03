@@ -89,12 +89,12 @@
       "frequency": "1 day a week"
     },
     {
-      "id": "12",
       "name": "Read to Kids",
       "category": "family",
-      "notes": "",
+      "frequency": "5 days a week",
       "duration": "30 mins",
-      "frequency": "5 days a week"
+      "notes": "Story Time!",
+      "id": "12"
     },
     {
       "id": "13",
@@ -105,19 +105,19 @@
       "frequency": "5 days a week"
     },
     {
-      "id": "14",
       "name": "Listen to Music",
       "category": "entertainment",
-      "notes": "",
+      "frequency": "everyday",
       "duration": "30 mins",
-      "frequency": "everyday"
+      "notes": "Rock & Roll.",
+      "id": "14"
     },
     {
       "id": "15",
       "name": "Play Music",
       "category": "well-being",
       "notes": "Banjo & Flute",
-      "duration": "2 hours ",
+      "duration": "2 hours",
       "frequency": "on weekends"
     },
     {

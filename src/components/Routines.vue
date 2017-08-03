@@ -26,22 +26,22 @@
           <th @click='setSortCol("name")' title='Click to sort by column'>
             Name &nbsp;
             <span>
-              <span class='text-muted glyphicon glyphicon-chevron-up' aria-hidden="true"></span>
+              <span class='text-muted glyphicon glyphicon-sort' aria-hidden="true"></span>
             </span></th>
           <th @click='setSortCol("category")' v-if='!isCatSelected' title='Click header to sort by this column'>
             Category &nbsp;
             <span>
-              <span class='text-muted glyphicon glyphicon-chevron-up' aria-hidden="true"></span>
+              <span class='text-muted glyphicon glyphicon-sort' aria-hidden="true"></span>
             </span>
           <th @click='setSortCol("duration")' v-if='!isDurSelected' title='Click header to sort by this column'>
             Duration &nbsp;
             <span>
-              <span class='text-muted glyphicon glyphicon-chevron-up' aria-hidden="true"></span>
+              <span class='text-muted glyphicon glyphicon-sort' aria-hidden="true"></span>
             </span></th>
           <th @click='setSortCol("frequency")' v-if='!isFreqSelected' title='Click header to sort by this column'>
             Frequency &nbsp;
             <span>
-              <span class='text-muted glyphicon glyphicon-chevron-up' aria-hidden="true"></span>
+              <span class='text-muted glyphicon glyphicon-sort' aria-hidden="true"></span>
             </span></th>
           <th>Notes</th>
         </tr>
@@ -128,10 +128,10 @@
             @click='resetSelection()'>
         Show All
       </span>  &nbsp; &nbsp;
-      <span v-if='!inShowRoutineEditor' class='btn btn-sm btn-info' @click='toggleRoutineEditor()'>
+      <span v-if='!inShowRoutineEditor' class='btn btn-sm btn-default' @click='setRoutineInNewMode()'>
         New Routine
       </span>  &nbsp; &nbsp;
-      <span v-if='!inNewCat' class='btn btn-sm btn-info' @click='toggleCategoryEditor()'>
+      <span v-if='!inNewCat' class='btn btn-sm btn-default' @click='toggleCategoryEditor()'>
         New Category
       </span>
     </p>
@@ -194,7 +194,7 @@ const RoutineVue = {
           const indexToEdit = this.routines.findIndex(r => r.id === routineId)
           if (indexToEdit >= 0) {
             const rec = this.routines[indexToEdit]
-            console.log(JSON.stringify(rec));
+            // Set up the editor values.
             this.routineId = routineId
             this.nroutine = rec.name
             this.ncat = rec.category
@@ -207,7 +207,9 @@ const RoutineVue = {
     },
     toggleCategoryEditor: function() {
       this.inNewCat = !this.inNewCat
-      this.mode = 'new'
+      setTimeout(() => { // Give it half a second for the editor to show up.
+        document.querySelector('#fld-category').focus()
+      }, 250)
     },
     deleteRoutine(routineId) {
       if (confirm('Are you sure you wish to delete this routine?')) {
@@ -221,13 +223,20 @@ const RoutineVue = {
           })
       }
     },
+    setRoutineInNewMode() {
+      this.mode = 'new'
+      this.toggleRoutineEditor()
+      setTimeout(() => { // Give it half a second for the editor to show up.
+        document.querySelector('#fld-routine').focus()
+      }, 250)
+    },
     setRoutineInEditMode(routineId) {
-      this.inShowRoutineEditor = false; // ! Important !.
       this.mode = 'edit'
+      this.inShowRoutineEditor = false; // ! Important !.
       this.toggleRoutineEditor(routineId)
       setTimeout(() => { // Give it half a second for the editor to show up.
         document.querySelector('#fld-routine').focus()
-      }, 500)
+      }, 250)
     },
     saveRoutine: function() {
       const lc = this.nroutine.trim()
