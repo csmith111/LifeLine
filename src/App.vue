@@ -7,6 +7,10 @@
 </template>
 
 <script>
+import miniToastr from 'mini-toastr'
+
+miniToastr.init()
+
 export default {
   name: 'app',
 };

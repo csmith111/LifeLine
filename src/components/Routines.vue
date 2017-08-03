@@ -78,29 +78,42 @@
         </tr>
       </tbody>
     </table>
-    <div v-if='inAdding'>
+    <div v-if='inNewRoutine'>
       <form class="form-inline" style="margin-bottom: 0.5em">
         <div class="form-group">
-          <input type="text" class="form-control" id="fld-routine" placeholder="Routine">
+          <input type="text" class="form-control" id="fld-routine" v-model='nroutine' placeholder="Routine">
         </div>
         <div class="form-group">
-          <select class="form-control">
+          <select class="form-control" v-model="ncat">
             <option v-for='cat in ccategories' :key='cat'>{{cat}}</option>
           </select>
         </div>
         <div class="form-group">
-          <select class="form-control">
+          <select class="form-control" v-model='ndur'>
             <option v-for='dur in cdurations' :key='dur'>{{dur}}</option>
           </select>
         </div>
         <div class="form-group">
-          <select class="form-control">
+          <select class="form-control" v-model="nfreq">
             <option v-for='freq in cfrequencies' :key='freq'>{{freq}}</option>
           </select>
         </div>
+        <div class="form-group">
+          <input type="text" class="form-control" v-model='nnote' placeholder="Notes">
+        </div>
         &nbsp; &nbsp;
-        <button type="submit" class="btn btn-info"> OK </button> &nbsp; &nbsp;
-        <button class="btn btn-warning" @click='isAdding()'> Cancel </button>
+        <button type="submit" class="btn btn-info" @click='saveRoutine()'> OK </button> &nbsp; &nbsp;
+        <button class="btn btn-warning" @click='toggleRoutineEditor()'> Close </button>
+      </form>
+    </div>
+    <div v-if='inNewCat'>
+      <form class="form-inline" style="margin-bottom: 0.5em">
+        <div class="form-group">
+          <input type="text" class="form-control" id="fld-category" v-model='ncategory' placeholder="Category">
+        </div>
+        &nbsp; &nbsp;
+        <button type="submit" class="btn btn-info" @click='saveCategory()'> OK </button> &nbsp; &nbsp;
+        <button class="btn btn-warning" @click='toggleCategoryEditor()'> Close </button>
       </form>
     </div>
     <p>
@@ -109,9 +122,12 @@
             class='btn btn-sm btn-info'
             @click='resetSelection()'>
         Show All
-      </span>
-      <span v-if='!inAdding' class='btn btn-sm btn-info' @click='isAdding()'>
+      </span>  &nbsp; &nbsp;
+      <span v-if='!inNewRoutine' class='btn btn-sm btn-info' @click='toggleRoutineEditor()'>
         New Routine
+      </span>  &nbsp; &nbsp;
+      <span v-if='!inNewCat' class='btn btn-sm btn-info' @click='toggleCategoryEditor()'>
+        New Category
       </span>
     </p>
   </div>
@@ -122,6 +138,7 @@
 import cycle from '../utils'
 import R from 'ramda'
 import axios from 'axios'
+import miniToastr from 'mini-toastr'
 
 const labeltypes = ['label-info', 'label-primary', 'label-success',
                     'label-danger', 'label-warning', 'label-default']
@@ -133,121 +150,167 @@ const sortsFns = {
   frequency: R.sortBy(R.prop('frequency')),
 }
 
-export default {
+const RoutineVue = {
   name: 'routines',
   data() {
     return {
-      routines: [],
-      isCatSelected: false,
-      catSelected: '',
-      isDurSelected: false,
+      routines: [],               // The View shows these routines.
+      ccategories: [],            // Computed categories.
+      cdurations: [],             // Also computed.
+      cfrequencies: [],           // Ditto.
+      nroutine: '',               // Values captured in UI.
+      ncategory: '',
+      ncat: '',
+      ndur: '',
+      nfreq: '',
+      nnote: '',
+      catSelected: '',            // Used in filtering routines for this selection.
       durSelected: '',
-      isFreqSelected: false,
       freqSelected: '',
-      inAdding: false,
-      ccategories: [
-        'family', 'self-dev', 'health'
-      ],
-      cdurations: [
-        '1 hour', '2 hours', '3 hours'
-      ],
-      cfrequencies: [
-        'once a week', '2 days a week', '3 days a week'
-      ],
+      isCatSelected: false,       // Indicates the current applicable filter.
+      isDurSelected: false,
+      isFreqSelected: false,
+      inNewRoutine: false,        // Edit status
+      inNewCat: false,
     }
   },
   methods: {
-    isAdding: function() {
-      this.$data.inAdding = !this.$data.inAdding
+    toggleRoutineEditor: function() {
+      this.inNewRoutine = !this.inNewRoutine
+    },
+    toggleCategoryEditor: function() {
+      this.inNewCat = !this.inNewCat
+    },
+    saveRoutine: function() {
+      console.log('In saveRoutine(): ' + this.nroutine);
+      const lc = this.nroutine.trim()
+      if (this.routines.findIndex((r) => r.name.toLowerCase() === lc) >= 0) {
+        miniToastr.error('This routine is already defined.')
+        document.querySelector('#fld-routine').focus()
+      } else {
+        const newroutine = {
+          name: this.nroutine,
+          category: this.ncat,
+          frequency: this.nfreq,
+          duration: this.ndur,
+          notes: this.nnote,
+          id: guid(),
+        }
+        console.log('newroutine:', JSON.stringify(newroutine));
+        axios.post('http://localhost:3000/routines', newroutine)
+          .then(() => {
+            this.nroutine = ''
+            miniToastr.success('Routine saved.')
+            this.fetchRoutines()
+          })
+          .catch(error => {
+            alert("Error posting routine: " + error)
+          })
+      }
+    },
+    saveCategory: function() {
+      const lc = this.ncategory.trim()
+      if (this.ccategories.findIndex((cat) => cat.toLowerCase() === lc) >= 0) {
+        miniToastr.error('This category is already defined.')
+        document.querySelector('#fld-category').focus()
+      } else {
+        this.ccategories.push(this.ncategory)
+        miniToastr.success('Category added successfully.')
+        this.ncategory = ''
+      }
+      console.log('Cat list:', JSON.stringify(this.ccategories))
     },
     selectCategory: function (category) {
-      if (this.$data.isDurSelected || this.$data.isFreqSelected) {
+      if (this.isDurSelected || this.isFreqSelected) {
         return
       }
-      this.$data.isCatSelected = !this.$data.isCatSelected
-      this.$data.catSelected = this.$data.isCatSelected ? category : ''
+      this.isCatSelected = !this.isCatSelected
+      this.catSelected = this.isCatSelected ? category : ''
     },
     selectDuration: function (duration) {
-      if (this.$data.isCatSelected || this.$data.isFreqSelected) {
+      if (this.isCatSelected || this.isFreqSelected) {
         return
       }
-      this.$data.isDurSelected = !this.$data.isDurSelected
-      this.$data.durSelected = this.$data.isDurSelected ? duration : ''
+      this.isDurSelected = !this.isDurSelected
+      this.durSelected = this.isDurSelected ? duration : ''
     },
     selectFrequency: function (freq) {
-      if (this.$data.isCatSelected || this.$data.isDurSelected) {
+      if (this.isCatSelected || this.isDurSelected) {
         return
       }
-      this.$data.isFreqSelected = !this.$data.isFreqSelected
-      this.$data.freqSelected = this.$data.isFreqSelected ? freq : ''
+      this.isFreqSelected = !this.isFreqSelected
+      this.freqSelected = this.isFreqSelected ? freq : ''
     },
     resetSelection() {
-      if (this.$data.isCatSelected) {
-        this.$data.isCatSelected = false
-        this.$data.catSelected = ''
-      } else if (this.$data.isDurSelected) {
-        this.$data.isDurSelected = false
-        this.$data.durSelected = ''
-      } else if (this.$data.isFreqSelected) {
-        this.$data.isFreqSelected = false
-        this.$data.freqSelected = ''
+      if (this.isCatSelected) {
+        this.isCatSelected = false
+        this.catSelected = ''
+      } else if (this.isDurSelected) {
+        this.isDurSelected = false
+        this.durSelected = ''
+      } else if (this.isFreqSelected) {
+        this.isFreqSelected = false
+        this.freqSelected = ''
       }
     },
     setSortCol: function(col) {
-      this.$data.routines = sortsFns[col](this.$data.routines)
+      this.routines = sortsFns[col](this.routines)
+    },
+    fetchRoutines() {
+      const resolveRoutine = (resolve) => {
+        this.routines = resolve.data
+        const uniqueCategoriesFn = R.compose(R.uniq, R.pluck('category'))
+        const uniqueFrequenciesFn = R.compose(R.uniq, R.pluck('frequency'))
+        const uniqueDurationsFn = R.compose(R.uniq, R.pluck('duration'))
+        const uniqueCats = uniqueCategoriesFn(this.routines)
+        const uniqueFreqs = uniqueFrequenciesFn(this.routines)
+        const uniqueDurations = uniqueDurationsFn(this.routines)
+        const catcolors = cycle(uniqueCats.length, labeltypes)
+        const catcolormap = R.zipObj(uniqueCats, catcolors)
+        const freqcolors = cycle(uniqueFreqs.length, labeltypes)
+        const freqcolormap = R.zipObj(uniqueFreqs, freqcolors)
+        const durationcolors = cycle(uniqueDurations.length, labeltypes)
+        const durationcolormap = R.zipObj(uniqueDurations, durationcolors)
+        const sortByCat = R.sortBy(R.prop('category'))
+        this.routines = sortByCat(this.routines)
+        this.routines.map(r => {
+          r.catcolor = catcolormap[r.category]
+          r.freqcolor = freqcolormap[r.frequency]
+          r.durationcolor = durationcolormap[r.duration]
+          r.guid = guid()
+        })
+        this.ccategories = uniqueCats
+        this.cdurations = uniqueDurations
+        this.cfrequencies = uniqueFreqs
+      }
+      axios.get('http://localhost:3000/routines')
+        .then(resolveRoutine)
+        .catch(error => {
+          alert("Error fetching routines: " + error)
+        })
     }
   },
   computed: {
     filterRoutines() {
-      if (this.$data.isCatSelected) {
-        return this.$data.routines.filter(r => {
-          return this.$data.catSelected === r.category
+      if (this.isCatSelected) {
+        return this.routines.filter(r => {
+          return this.catSelected === r.category
         })
-      } if (this.$data.isDurSelected) {
-        return this.$data.routines.filter(r => {
-          return this.$data.durSelected === r.duration
+      } if (this.isDurSelected) {
+        return this.routines.filter(r => {
+          return this.durSelected === r.duration
         })
-      } if (this.$data.isFreqSelected) {
-        return this.$data.routines.filter(r => {
-          return this.$data.freqSelected === r.frequency
+      } if (this.isFreqSelected) {
+        return this.routines.filter(r => {
+          return this.freqSelected === r.frequency
         })
       } else {
-        return this.$data.routines
+        return this.routines
       }
-    }
+    },
   },
   created() {
-    const resolveRoutine = resolve => {
-      this.routines = resolve.data
-      const uniqueCategoriesFn = R.compose(R.uniq, R.pluck('category'))
-      const uniqueFrequenciesFn = R.compose(R.uniq, R.pluck('frequency'))
-      const uniqueDurationsFn = R.compose(R.uniq, R.pluck('duration'))
-      const uniqueCats = uniqueCategoriesFn(this.routines)
-      const uniqueFreqs = uniqueFrequenciesFn(this.routines)
-      const uniqueDurations = uniqueDurationsFn(this.routines)
-      const catcolors = cycle(uniqueCats.length, labeltypes)
-      const catcolormap = R.zipObj(uniqueCats, catcolors)
-      const freqcolors = cycle(uniqueFreqs.length, labeltypes)
-      const freqcolormap = R.zipObj(uniqueFreqs, freqcolors)
-      const durationcolors = cycle(uniqueDurations.length, labeltypes)
-      const durationcolormap = R.zipObj(uniqueDurations, durationcolors)
-      const sortByCat = R.sortBy(R.prop('category'))
-      this.routines = sortByCat(this.routines)
-      this.routines.map(r => {
-        r.catcolor = catcolormap[r.category]
-        r.freqcolor = freqcolormap[r.frequency]
-        r.durationcolor = durationcolormap[r.duration]
-        r.guid = guid()
-      })
-      this.ccategories = uniqueCats
-      this.cdurations = uniqueDurations
-      this.cfrequencies = uniqueFreqs
-    }
-    axios.get('http://localhost:3000/routines')
-      .then(resolveRoutine)
-      .catch(error => {
-        alert("There was an error fetching routines data. " + error)
-      })
+    this.fetchRoutines()
   }
 }
 
@@ -265,4 +328,7 @@ function guid() {
     }
     return _p8() + _p8(true) + _p8(true) + _p8()
 }
+
+export default RoutineVue
+
 </script>
