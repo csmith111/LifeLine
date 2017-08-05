@@ -26,22 +26,22 @@
           <th @click='setSortCol("name")' title='Click to sort by column'>
             Name &nbsp;
             <span>
-              <span class='text-muted glyphicon' :class="orderFlags['name']==='up'?'glyphicon-sort-by-alphabet':'glyphicon-sort-by-alphabet-alt'" aria-hidden="true"></span>
+              <span class='glyphicon' :class="orderFlags['name']==='up'?'glyphicon-sort-by-alphabet':'text-muted glyphicon-sort-by-alphabet-alt'" aria-hidden="true"></span>
             </span></th>
           <th @click='setSortCol("category")' v-if='!isCatSelected' title='Click header to sort by this column'>
             Category &nbsp;
             <span>
-              <span class='text-muted glyphicon' :class="orderFlags['category']==='up'?'glyphicon-sort-by-alphabet':'glyphicon-sort-by-alphabet-alt'" aria-hidden="true"></span>
+              <span class='glyphicon' :class="orderFlags['category']==='up'?'glyphicon-sort-by-alphabet':'text-muted glyphicon-sort-by-alphabet-alt'" aria-hidden="true"></span>
             </span>
           <th @click='setSortCol("duration")' v-if='!isDurSelected' title='Click header to sort by this column'>
             Duration &nbsp;
             <span>
-              <span class='text-muted glyphicon' :class="orderFlags['duration']==='up'?'glyphicon-sort-by-attributes':'glyphicon-sort-by-attributes-alt'" aria-hidden="true"></span>
+              <span class='glyphicon' :class="orderFlags['duration']==='up'?'glyphicon-sort-by-attributes':'text-muted glyphicon-sort-by-attributes-alt'" aria-hidden="true"></span>
             </span></th>
           <th @click='setSortCol("frequency")' v-if='!isFreqSelected' title='Click header to sort by this column'>
             Frequency &nbsp;
             <span>
-              <span class='text-muted glyphicon' :class="orderFlags['frequency']==='up'?'glyphicon-sort-by-alphabet':'glyphicon-sort-by-alphabet-alt'" aria-hidden="true"></span>
+              <span class='glyphicon' :class="orderFlags['frequency']==='up'?'glyphicon-sort-by-alphabet':'text-muted glyphicon-sort-by-alphabet-alt'" aria-hidden="true"></span>
             </span></th>
           <th>Notes</th>
         </tr>
@@ -179,6 +179,7 @@ const RoutineVue = {
       ndur: '',
       nfreq: '',
       nnote: '',
+      currentCol: '',             // Col name set when column is selected.
       catSelected: '',            // Used in filtering routines for this selection.
       durSelected: '',
       freqSelected: '',
@@ -191,6 +192,12 @@ const RoutineVue = {
     }
   },
   methods: {
+    showOrder(col) {
+      let muteState = this.currentCol === col ? '' : ' text-muted '
+      return this.orderFlags[col] === 'up'
+             ? muteState+'glyphicon-sort-by-alphabet'
+             : muteState+'glyphicon-sort-by-alphabet-alt'
+    },
     toggleRoutineEditor: function(routineId) {
       this.inShowRoutineEditor = !this.inShowRoutineEditor
       if (this.inShowRoutineEditor) {
@@ -340,6 +347,7 @@ const RoutineVue = {
       }
     },
     setSortCol: function(col) {
+      this.currentCol = col
       this.orderFlags[col] = this.orderFlags[col] === 'up' ? 'down' : 'up'
       this.routines = sortsFns[this.orderFlags[col]][col](this.routines)
     },
