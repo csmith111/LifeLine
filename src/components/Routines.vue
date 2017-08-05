@@ -149,10 +149,18 @@ const labeltypes = ['label-info', 'label-primary', 'label-success',
                     'label-danger', 'label-warning', 'label-default']
 
 const sortsFns = {
-  name: R.sortBy(R.prop('name')),
-  category: R.sortBy(R.prop('category')),
-  duration: R.sortBy(R.prop('duration')),
-  frequency: R.sortBy(R.prop('frequency')),
+  up: {
+    name: R.sortBy(R.prop('name')),
+    category: R.sortBy(R.prop('category')),
+    duration: R.sortBy(R.prop('duration')),
+    frequency: R.sortBy(R.prop('frequency')),
+  },
+  down: {
+    name: R.sort(R.descend(R.prop('name'))),
+    category: R.sort(R.descend(R.prop('category'))),
+    duration: R.sort(R.descend(R.prop('duration'))),
+    frequency: R.sort(R.descend(R.prop('frequency'))),
+  }
 }
 
 const RoutineVue = {
@@ -160,6 +168,7 @@ const RoutineVue = {
   data() {
     return {
       routines: [],               // The View shows these routines.
+      orderFlags: {name: 'up', category: 'up', duration: 'up', frequency: 'up'},
       ccategories: [],            // Computed categories.
       cdurations: [],             // Also computed.
       cfrequencies: [],           // Ditto.
@@ -331,7 +340,8 @@ const RoutineVue = {
       }
     },
     setSortCol: function(col) {
-      this.routines = sortsFns[col](this.routines)
+      this.orderFlags[col] = this.orderFlags[col] === 'up' ? 'down' : 'up'
+      this.routines = sortsFns[this.orderFlags[col]][col](this.routines)
     },
     fetchRoutines() {
       const resolveRoutines = (resolve) => {
