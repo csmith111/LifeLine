@@ -26,22 +26,22 @@
           <th @click='setSortCol("name")' title='Click to sort by column'>
             Name &nbsp;
             <span>
-              <span class='glyphicon' :class="orderFlags['name']==='up'?'glyphicon-sort-by-alphabet':'text-muted glyphicon-sort-by-alphabet-alt'" aria-hidden="true"></span>
+              <span class='glyphicon' :class="showOrder('name')" aria-hidden="true"></span>
             </span></th>
           <th @click='setSortCol("category")' v-if='!isCatSelected' title='Click header to sort by this column'>
             Category &nbsp;
             <span>
-              <span class='glyphicon' :class="orderFlags['category']==='up'?'glyphicon-sort-by-alphabet':'text-muted glyphicon-sort-by-alphabet-alt'" aria-hidden="true"></span>
+              <span class='glyphicon' :class="showOrder('category')" aria-hidden="true"></span>
             </span>
           <th @click='setSortCol("duration")' v-if='!isDurSelected' title='Click header to sort by this column'>
             Duration &nbsp;
             <span>
-              <span class='glyphicon' :class="orderFlags['duration']==='up'?'glyphicon-sort-by-attributes':'text-muted glyphicon-sort-by-attributes-alt'" aria-hidden="true"></span>
+              <span class='glyphicon' :class="showOrder('duration')" aria-hidden="true"></span>
             </span></th>
           <th @click='setSortCol("frequency")' v-if='!isFreqSelected' title='Click header to sort by this column'>
             Frequency &nbsp;
             <span>
-              <span class='glyphicon' :class="orderFlags['frequency']==='up'?'glyphicon-sort-by-alphabet':'text-muted glyphicon-sort-by-alphabet-alt'" aria-hidden="true"></span>
+              <span class='glyphicon' :class="showOrder('frequency')" aria-hidden="true"></span>
             </span></th>
           <th>Notes</th>
         </tr>
@@ -242,7 +242,7 @@ const RoutineVue = {
     setRoutineInNewMode() {
       this.mode = 'new'
       this.toggleRoutineEditor()
-      setTimeout(() => { // Give it half a second for the editor to show up.
+      setTimeout(() => { // Give it a moment for the editor to show up.
         document.querySelector('#fld-routine').focus()
       }, 250)
     },
@@ -250,7 +250,7 @@ const RoutineVue = {
       this.mode = 'edit'
       this.inShowRoutineEditor = false; // ! Important !.
       this.toggleRoutineEditor(routineId)
-      setTimeout(() => { // Give it half a second for the editor to show up.
+      setTimeout(() => { // Give it a moment for the editor to show up.
         document.querySelector('#fld-routine').focus()
       }, 250)
     },
@@ -258,7 +258,7 @@ const RoutineVue = {
       const lc = this.nroutine.trim()
       if (lc === '') {
         miniToastr.error('Routine should be defined')
-        document.querySelector('#fld-routine').focus() // The editor is likely to be on-screen already, so timeout here.
+        document.querySelector('#fld-routine').focus() // Editor is likely to be on-screen, so no timeout here.
         return
       }
       let foundIndex = this.routines.findIndex((r) => r.name.toLowerCase() === lc)
@@ -399,13 +399,14 @@ const RoutineVue = {
     filterRoutines() {
       if (this.isCatSelected) {
         return this.routines.filter(r => this.catSelected === r.category)
-      } else if (this.isDurSelected) {
-        return this.routines.filter(r => this.durSelected === r.duration)
-      } else if (this.isFreqSelected) {
-        return this.routines.filter(r => this.freqSelected === r.frequency)
-      } else {
-        return this.routines
       }
+      if (this.isDurSelected) {
+        return this.routines.filter(r => this.durSelected === r.duration)
+      }
+      if (this.isFreqSelected) {
+        return this.routines.filter(r => this.freqSelected === r.frequency)
+      }
+      return this.routines
     },
   },
   created() {
