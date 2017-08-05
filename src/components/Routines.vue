@@ -186,9 +186,9 @@ const RoutineVue = {
       this.inShowRoutineEditor = !this.inShowRoutineEditor
       if (this.inShowRoutineEditor) {
         if (this.mode === 'new') {
-          this.ncat = this.ccategories.length > 0 ? this.ccategories[0] : ''
-          this.nfreq = this.cfrequencies.length > 0 ? this.cfrequencies[0] : ''
-          this.ndur = this.cdurations.length > 0 ? this.cdurations[0] : ''
+          this.ncat = this.ccategories[0] || ''
+          this.nfreq = this.cfrequencies[0] || ''
+          this.ndur = this.cdurations[0] || ''
           this.nnote = ''
         } else {
           const indexToEdit = this.routines.findIndex(r => r.id === routineId)
@@ -242,7 +242,7 @@ const RoutineVue = {
       const lc = this.nroutine.trim()
       if (lc === '') {
         miniToastr.error('Routine should be defined')
-        document.querySelector('#fld-routine').focus()
+        document.querySelector('#fld-routine').focus() // The editor is likely to be on-screen already, so timeout here.
         return
       }
       let foundIndex = this.routines.findIndex((r) => r.name.toLowerCase() === lc)
@@ -363,7 +363,7 @@ const RoutineVue = {
       axios.get('http://localhost:3000/frequencies')
         .then(resolve => this.cfrequencies = resolve.data)
         .catch(error => {
-          alert("Error fetching routines: " + error)
+          alert("Error fetching frequencies: " + error)
         })
       axios.get('http://localhost:3000/durations')
         .then(resolve => this.cdurations = resolve.data)
@@ -380,17 +380,11 @@ const RoutineVue = {
   computed: {
     filterRoutines() {
       if (this.isCatSelected) {
-        return this.routines.filter(r => {
-          return this.catSelected === r.category
-        })
-      } if (this.isDurSelected) {
-        return this.routines.filter(r => {
-          return this.durSelected === r.duration
-        })
-      } if (this.isFreqSelected) {
-        return this.routines.filter(r => {
-          return this.freqSelected === r.frequency
-        })
+        return this.routines.filter(r => this.catSelected === r.category)
+      } else if (this.isDurSelected) {
+        return this.routines.filter(r => this.durSelected === r.duration)
+      } else if (this.isFreqSelected) {
+        return this.routines.filter(r => this.freqSelected === r.frequency)
       } else {
         return this.routines
       }
