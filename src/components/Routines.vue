@@ -26,22 +26,22 @@
           <th @click='setSortCol("name")' title='Click to sort by column'>
             Name &nbsp;
             <span>
-              <span class='text-muted glyphicon glyphicon-sort' aria-hidden="true"></span>
+              <span class='text-muted glyphicon' :class="orderFlags['name']==='up'?'glyphicon-sort-by-alphabet':'glyphicon-sort-by-alphabet-alt'" aria-hidden="true"></span>
             </span></th>
           <th @click='setSortCol("category")' v-if='!isCatSelected' title='Click header to sort by this column'>
             Category &nbsp;
             <span>
-              <span class='text-muted glyphicon glyphicon-sort' aria-hidden="true"></span>
+              <span class='text-muted glyphicon' :class="orderFlags['category']==='up'?'glyphicon-sort-by-alphabet':'glyphicon-sort-by-alphabet-alt'" aria-hidden="true"></span>
             </span>
           <th @click='setSortCol("duration")' v-if='!isDurSelected' title='Click header to sort by this column'>
             Duration &nbsp;
             <span>
-              <span class='text-muted glyphicon glyphicon-sort' aria-hidden="true"></span>
+              <span class='text-muted glyphicon' :class="orderFlags['duration']==='up'?'glyphicon-sort-by-attributes':'glyphicon-sort-by-attributes-alt'" aria-hidden="true"></span>
             </span></th>
           <th @click='setSortCol("frequency")' v-if='!isFreqSelected' title='Click header to sort by this column'>
             Frequency &nbsp;
             <span>
-              <span class='text-muted glyphicon glyphicon-sort' aria-hidden="true"></span>
+              <span class='text-muted glyphicon' :class="orderFlags['frequency']==='up'?'glyphicon-sort-by-alphabet':'glyphicon-sort-by-alphabet-alt'" aria-hidden="true"></span>
             </span></th>
           <th>Notes</th>
         </tr>
