@@ -26,22 +26,22 @@
           <th @click='setSortCol("name")' title='Click to sort by column'>
             Name &nbsp;
             <span>
-              <span class='text-muted glyphicon glyphicon-sort' aria-hidden="true"></span>
+              <span class='glyphicon' :class="showOrder('name')" aria-hidden="true"></span>
             </span></th>
           <th @click='setSortCol("category")' v-if='!isCatSelected' title='Click header to sort by this column'>
             Category &nbsp;
             <span>
-              <span class='text-muted glyphicon glyphicon-sort' aria-hidden="true"></span>
+              <span class='glyphicon' :class="showOrder('category')" aria-hidden="true"></span>
             </span>
           <th @click='setSortCol("duration")' v-if='!isDurSelected' title='Click header to sort by this column'>
             Duration &nbsp;
             <span>
-              <span class='text-muted glyphicon glyphicon-sort' aria-hidden="true"></span>
+              <span class='glyphicon' :class="showOrder('duration')" aria-hidden="true"></span>
             </span></th>
           <th @click='setSortCol("frequency")' v-if='!isFreqSelected' title='Click header to sort by this column'>
             Frequency &nbsp;
             <span>
-              <span class='text-muted glyphicon glyphicon-sort' aria-hidden="true"></span>
+              <span class='glyphicon' :class="showOrder('frequency')" aria-hidden="true"></span>
             </span></th>
           <th>Notes</th>
         </tr>
@@ -149,10 +149,18 @@ const labeltypes = ['label-info', 'label-primary', 'label-success',
                     'label-danger', 'label-warning', 'label-default']
 
 const sortsFns = {
-  name: R.sortBy(R.prop('name')),
-  category: R.sortBy(R.prop('category')),
-  duration: R.sortBy(R.prop('duration')),
-  frequency: R.sortBy(R.prop('frequency')),
+  up: {
+    name: R.sortBy(R.prop('name')),
+    category: R.sortBy(R.prop('category')),
+    duration: R.sortBy(R.prop('duration')),
+    frequency: R.sortBy(R.prop('frequency')),
+  },
+  down: {
+    name: R.sort(R.descend(R.prop('name'))),
+    category: R.sort(R.descend(R.prop('category'))),
+    duration: R.sort(R.descend(R.prop('duration'))),
+    frequency: R.sort(R.descend(R.prop('frequency'))),
+  }
 }
 
 const RoutineVue = {
@@ -160,6 +168,7 @@ const RoutineVue = {
   data() {
     return {
       routines: [],               // The View shows these routines.
+      orderFlags: {name: 'up', category: 'up', duration: 'up', frequency: 'up'},
       ccategories: [],            // Computed categories.
       cdurations: [],             // Also computed.
       cfrequencies: [],           // Ditto.
@@ -170,6 +179,7 @@ const RoutineVue = {
       ndur: '',
       nfreq: '',
       nnote: '',
+      currentCol: '',             // Col name set when column is selected.
       catSelected: '',            // Used in filtering routines for this selection.
       durSelected: '',
       freqSelected: '',
@@ -182,13 +192,19 @@ const RoutineVue = {
     }
   },
   methods: {
+    showOrder(col) {
+      let muteState = this.currentCol === col ? '' : ' text-muted '
+      return this.orderFlags[col] === 'up'
+             ? muteState+'glyphicon-sort-by-alphabet'
+             : muteState+'glyphicon-sort-by-alphabet-alt'
+    },
     toggleRoutineEditor: function(routineId) {
       this.inShowRoutineEditor = !this.inShowRoutineEditor
       if (this.inShowRoutineEditor) {
         if (this.mode === 'new') {
-          this.ncat = this.ccategories.length > 0 ? this.ccategories[0] : ''
-          this.nfreq = this.cfrequencies.length > 0 ? this.cfrequencies[0] : ''
-          this.ndur = this.cdurations.length > 0 ? this.cdurations[0] : ''
+          this.ncat = this.ccategories[0] || ''
+          this.nfreq = this.cfrequencies[0] || ''
+          this.ndur = this.cdurations[0] || ''
           this.nnote = ''
         } else {
           const indexToEdit = this.routines.findIndex(r => r.id === routineId)
@@ -226,7 +242,7 @@ const RoutineVue = {
     setRoutineInNewMode() {
       this.mode = 'new'
       this.toggleRoutineEditor()
-      setTimeout(() => { // Give it half a second for the editor to show up.
+      setTimeout(() => { // Give it a moment for the editor to show up.
         document.querySelector('#fld-routine').focus()
       }, 250)
     },
@@ -234,7 +250,7 @@ const RoutineVue = {
       this.mode = 'edit'
       this.inShowRoutineEditor = false; // ! Important !.
       this.toggleRoutineEditor(routineId)
-      setTimeout(() => { // Give it half a second for the editor to show up.
+      setTimeout(() => { // Give it a moment for the editor to show up.
         document.querySelector('#fld-routine').focus()
       }, 250)
     },
@@ -242,7 +258,7 @@ const RoutineVue = {
       const lc = this.nroutine.trim()
       if (lc === '') {
         miniToastr.error('Routine should be defined')
-        document.querySelector('#fld-routine').focus()
+        document.querySelector('#fld-routine').focus() // Editor is likely to be on-screen, so no timeout here.
         return
       }
       let foundIndex = this.routines.findIndex((r) => r.name.toLowerCase() === lc)
@@ -331,7 +347,9 @@ const RoutineVue = {
       }
     },
     setSortCol: function(col) {
-      this.routines = sortsFns[col](this.routines)
+      this.currentCol = col
+      this.orderFlags[col] = this.orderFlags[col] === 'up' ? 'down' : 'up'
+      this.routines = sortsFns[this.orderFlags[col]][col](this.routines)
     },
     fetchRoutines() {
       const resolveRoutines = (resolve) => {
@@ -363,7 +381,7 @@ const RoutineVue = {
       axios.get('http://localhost:3000/frequencies')
         .then(resolve => this.cfrequencies = resolve.data)
         .catch(error => {
-          alert("Error fetching routines: " + error)
+          alert("Error fetching frequencies: " + error)
         })
       axios.get('http://localhost:3000/durations')
         .then(resolve => this.cdurations = resolve.data)
@@ -380,20 +398,15 @@ const RoutineVue = {
   computed: {
     filterRoutines() {
       if (this.isCatSelected) {
-        return this.routines.filter(r => {
-          return this.catSelected === r.category
-        })
-      } if (this.isDurSelected) {
-        return this.routines.filter(r => {
-          return this.durSelected === r.duration
-        })
-      } if (this.isFreqSelected) {
-        return this.routines.filter(r => {
-          return this.freqSelected === r.frequency
-        })
-      } else {
-        return this.routines
+        return this.routines.filter(r => this.catSelected === r.category)
       }
+      if (this.isDurSelected) {
+        return this.routines.filter(r => this.durSelected === r.duration)
+      }
+      if (this.isFreqSelected) {
+        return this.routines.filter(r => this.freqSelected === r.frequency)
+      }
+      return this.routines
     },
   },
   created() {

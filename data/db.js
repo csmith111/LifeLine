@@ -90,7 +90,7 @@ module.exports = {
           category: 'well-being',
           notes: 'Banjo & Flute',
           duration: '2 hours ',
-          frequency: 'on weekends' },
+          frequency: 'weekends' },
         { id: '16',
           name: 'Work',
           category: 'work',
@@ -120,7 +120,7 @@ module.exports = {
           category: 'family',
           notes: 'Hang out with the family',
           duration: '5 hours',
-          frequency: 'on weekends' }
+          frequency: 'weekends' }
     ],
     durations: [
       '1 min',
@@ -151,7 +151,7 @@ module.exports = {
       '18 hours',
       '19 hours',
       '20 hours',
-      '21 hour',
+      '21 hours',
       '22 hours',
       '23 hours',
       '24 hours',
@@ -165,6 +165,6 @@ module.exports = {
       '5 days a week',
       '6 days a week',
       'everyday',
-      'on weekends',
+      'weekends',
     ],
 }
